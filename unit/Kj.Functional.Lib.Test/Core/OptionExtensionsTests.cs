@@ -90,6 +90,23 @@ public class OptionExtensionsTests
 	}
 
 	[Test]
+	public void Bind_To_Either()
+	{
+		Either<int, string> BindFunc(int input)
+		{
+			return input * 2;
+		}
+
+		int someVal = _fixture.Create<int>();
+		Option<int> some = someVal;
+
+		some
+			.Bind(BindFunc,()=>"err")
+			.Do(vl => vl.Should().Be(someVal * 2),
+				vr => Assert.Fail());
+	}
+
+	[Test]
 	public void Where()
 	{
 		const int testedVal = 100;
