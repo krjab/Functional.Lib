@@ -130,4 +130,12 @@ public static class EitherExtensions
 		
 	}
 
+	public static Unit Do<TL, TR>(this Either<TL, TR> either, Action<TL> doLeft, Action<TR> doRight)
+	{
+		return either.Match(
+			vl => doLeft.ToFunc()(vl),
+			vr => doRight.ToFunc()(vr)
+		);
+	}
+
 }

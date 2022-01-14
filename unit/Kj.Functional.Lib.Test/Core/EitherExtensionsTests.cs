@@ -126,4 +126,26 @@ public class EitherExtensionsTests
 				return -1;
 			}).Should().Be(val);
 	}
+
+	[Test]
+	public void Do_Left()
+	{
+		int val = _fixture.Create<int>();
+		Either<int, string> boundVal = val;
+
+		boundVal
+			.Do(vl => vl.Should().Be(val),
+				_ => Assert.Fail());
+	}
+	
+	[Test]
+	public void Do_Right()
+	{
+		string val = _fixture.Create<string>();
+		Either<int, string> boundVal = val;
+
+		boundVal
+			.Do(_=>Assert.Fail(),
+				vr => vr.Should().Be(val));
+	}
 }
