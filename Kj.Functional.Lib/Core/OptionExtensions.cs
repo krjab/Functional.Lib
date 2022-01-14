@@ -42,6 +42,15 @@ public static class OptionExtensions
 		return input.SelectMany(t => t);
 	}
 
+	public static Either<TMapped, TR> Bind<TL, TR, TMapped>(this Option<TL> option,
+		Func<TL, Either<TMapped, TR>> bindFunc,
+		Func<TR> createRightFunc)
+	{
+		return option
+			.Match(bindFunc,
+				() => Either<TMapped, TR>.Right<TMapped, TR>(createRightFunc()));
+	}
+
 	[MustUseReturnValue]
 	public static Option<T> Where<T>(this Option<T> option, Func<T, bool> predicate)
 	{
