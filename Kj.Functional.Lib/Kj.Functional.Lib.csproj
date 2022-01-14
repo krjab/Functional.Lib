@@ -4,6 +4,13 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+
+        <PackageId>Kj.Functional.Lib</PackageId>
+        <Version>0.1.0</Version>
+        <Authors>K. Jablonski</Authors>
+        <Company>---</Company>
+        <PackageDescription>Small functional library for C#</PackageDescription>
+        <RepositoryUrl>https://github.com/krjab/Functional.Lib</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
