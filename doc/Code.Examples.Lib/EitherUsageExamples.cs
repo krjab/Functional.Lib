@@ -35,4 +35,38 @@ public class EitherUsageExamples
 				errorText => $"Parse error: {errorText}");
 		
 	}
+
+	private record UserDto(string FirstName, string LastName);
+
+	private record ErrorInfo(string ErrorText);
+	
+	public async Task UseChainedEitherMethods()
+	{
+		// An example Parse method (hardcoded logic)
+		Task<Either<UserDto, ErrorInfo>> ParseAsync(string input)
+		{
+			Either<UserDto, ErrorInfo> result = new UserDto("first", "last");
+			return Task.FromResult(result);
+		}
+		
+		// An example Validate method (hardcoded logic)
+		Task<Either<UserDto, ErrorInfo>> ValidateAsync(UserDto user)
+		{
+			Either<UserDto, ErrorInfo> result = new ErrorInfo("parse info");
+			return Task.FromResult(result);
+		}
+
+		Task<Either<UserDto, ErrorInfo>> ModifyUserAsync(UserDto user)
+		{
+			Either<UserDto, ErrorInfo> result = user with{FirstName = $"Modified {user.FirstName}"};
+			return Task.FromResult(result);
+		}
+		
+		string inputString = "abc";
+
+		var combinedResult = await ParseAsync(inputString)
+			.BindLeftAsync(ValidateAsync)
+			.BindLeftAsync(ModifyUserAsync);
+
+	}
 }

@@ -107,6 +107,15 @@ public static class EitherExtensions
 	}
 
 	[MustUseReturnValue]
+	public static async Task<Either<TMapped, TR>> BindLeftAsync<TL, TR, TMapped>(this Task<Either<TL, TR>> eitherTask,
+		Func<TL, Task<Either<TMapped, TR>>> mapLeft)
+	{
+		var takResult = await eitherTask;
+		return await takResult
+			.BindLeftAsync(mapLeft);
+	}
+	
+	[MustUseReturnValue]
 	public static async Task<TMapped> MatchAsync<TL, TR, TMapped>(this Task<Either<TL, TR>> thisTask,
 		Func<TL, TMapped> left, Func<TR, TMapped> right)
 	{
