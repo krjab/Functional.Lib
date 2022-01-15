@@ -15,13 +15,13 @@ public static class EnumerableExtensions
 	public static Option<T> TryFirst<T>(this IEnumerable<T> enumerable)
 	{
 		var firstOrNull = enumerable.FirstOrDefault();
-		return firstOrNull!;
+		return firstOrNull==null? Of.None:firstOrNull;
 	}
 
 	[Pure]
 	public static Option<T> TryFirst<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
 	{
 		var filtered = enumerable.FirstOrDefault(predicate);
-		return filtered;
+		return filtered == null ? Of.None: filtered;
 	}
 }

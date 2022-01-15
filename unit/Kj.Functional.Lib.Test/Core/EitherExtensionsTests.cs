@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using Kj.Functional.Lib.Core;
+using Kj.Functional.Lib.Test.TestHelpers.Fixture;
 using NUnit.Framework;
 
 namespace Kj.Functional.Lib.Test.Core;
@@ -128,24 +129,48 @@ public class EitherExtensionsTests
 	}
 
 	[Test]
-	public void Do_Left()
+	public async Task BindLeftAsync_WithTask()
 	{
-		int val = _fixture.Create<int>();
-		Either<int, string> boundVal = val;
+		int val = _fixture.CreateInt(100, 200);
+		Either<int, string> boundVal = -12334;
+		Either<int, string> boundVal2 = val;
 
-		boundVal
-			.Do(vl => vl.Should().Be(val),
+		Func<decimal, Task<Either<int, string>>> bindFunc = _ => Task.FromResult(boundVal);
+		Func<decimal, Task<Either<int, string>>> bindFunc2 = _ => Task.FromResult(boundVal2);
+		
+		Task<Either<decimal, string>> initialTask = Task.FromResult((Either<decimal,string>) 123M);
+
+		var bound = await initialTask
+			.BindLeftAsync(s => bindFunc(s))
+			.BindLeftAsync(x => bindFunc2(x));
+		
+		bound
+			.Match(i => i, _ =>
+			{
+				Assert.Fail();
+				return -1;
+			}).Should().Be(val);
+	}
+	
+	[Test]
+	public void Do_With_LeftResult()
+	{
+		int someValue = _fixture.Create<int>();
+		Either<int, string> either = someValue;
+
+		either
+			.Do(i => i.Should().Be(someValue),
 				_ => Assert.Fail());
 	}
 	
 	[Test]
-	public void Do_Right()
+	public void Do_With_RightResult()
 	{
-		string val = _fixture.Create<string>();
-		Either<int, string> boundVal = val;
+		string someValue = _fixture.Create<string>();
+		Either<int, string> either = someValue;
 
-		boundVal
-			.Do(_=>Assert.Fail(),
-				vr => vr.Should().Be(val));
+		either
+			.Do(i => Assert.Fail(),
+				s => s.Should().Be(someValue));
 	}
 }
