@@ -206,5 +206,90 @@ public static class EitherExtensions
 				}
 			);
 	}
+	
+	/// <summary>
+	/// Performs a side effect causing action on left or right side value.
+	/// </summary>
+	/// <param name="thisEither">Either structure to map</param>
+	/// <param name="leftResultAction">action to perform on the left side value</param>
+	/// <param name="rightResultTaskFunc">task returning function to perform on the right side value</param>
+	/// <typeparam name="TL">Left side type</typeparam>
+	/// <typeparam name="TR">Right side type</typeparam>
+	/// <returns>Original structure</returns>
+	public static Task<Either<TL, TR>> DoAsync<TL, TR>(this Either<TL, TR> thisEither, Action<TL> leftResultAction,
+		Func<TR, Task> rightResultTaskFunc)
+	{
+		return thisEither
+			.Match(lv =>
+				{
+					leftResultAction(lv);
+					return Task.FromResult(thisEither);
+				},
+				rv =>
+				{
+					var taskFunc = () => rightResultTaskFunc(rv);
+					return taskFunc.DoTaskAndReturnEither(thisEither);
+				}
+			);
+	}
+
+	private static async Task<Either<TL, TR>> DoTaskAndReturnEither<TL, TR>(this Func<Task> rightResultTaskFunc,
+		Either<TL, TR> toReturn)
+	{
+		await rightResultTaskFunc();
+		return toReturn;
+	}
+
+	/// <summary>
+	/// Performs a side effect causing action on left or right side value.
+	/// </summary>
+	/// <param name="thisEither">Either structure to map</param>
+	/// <param name="leftResultTaskFunc">task returning function to perform on the left side value</param>
+	/// <param name="rightResultAction">action to perform on the right side value</param>
+	/// <typeparam name="TL">Left side type</typeparam>
+	/// <typeparam name="TR">Right side type</typeparam>
+	/// <returns>Original structure</returns>
+	public static Task<Either<TL, TR>> DoAsync<TL, TR>(this Either<TL, TR> thisEither, Func<TL, Task> leftResultTaskFunc,
+		Action<TR> rightResultAction)
+	{
+		return thisEither
+			.Match(lv =>
+				{
+					var taskFunc = () => leftResultTaskFunc(lv);
+					return taskFunc.DoTaskAndReturnEither(thisEither);
+				},
+				rv =>
+				{
+					rightResultAction(rv);
+					return Task.FromResult(thisEither);
+				}
+			);
+	}
+	
+	/// <summary>
+	/// Performs a side effect causing action on left or right side value.
+	/// </summary>
+	/// <param name="thisEither">Either structure to map</param>
+	/// <param name="leftResultTaskFunc">task returning function to perform on the left side value</param>
+	/// <param name="rightResultTaskFunc">task returning function to perform on the right side value</param>
+	/// <typeparam name="TL">Left side type</typeparam>
+	/// <typeparam name="TR">Right side type</typeparam>
+	/// <returns>Original structure</returns>
+	public static Task<Either<TL, TR>> DoAsync<TL, TR>(this Either<TL, TR> thisEither, Func<TL, Task> leftResultTaskFunc,
+		Func<TR, Task> rightResultTaskFunc)
+	{
+		return thisEither
+			.Match(lv =>
+				{
+					var taskFunc = () => leftResultTaskFunc(lv);
+					return taskFunc.DoTaskAndReturnEither(thisEither);
+				},
+				rv =>
+				{
+					var taskFunc = () => rightResultTaskFunc(rv);
+					return taskFunc.DoTaskAndReturnEither(thisEither);;
+				}
+			);
+	}
 
 }
