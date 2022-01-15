@@ -8,8 +8,7 @@ public class OptionUsageExamples
 	public static void UseAndConsumeOption()
 	{
 		// List of strings to parse
-		string[] toParse = new[]
-		{
+		string[] toParse = {
 			"1",
 			"2",
 			"not-valid",
@@ -36,7 +35,7 @@ public class OptionUsageExamples
 		
 		// if parsedOptional contains a value AND if this value satisfies the condition (>100)
 		// then filtered becomes an optional with this value. Otherwise it gets to None.
-		var filtered = parsedOptional.Where(i => i > 100);
+		var filtered = parsedOptional.Filter(i => i > 100);
 
 		// we can use do to utilize to value without a result, i.e. for example to log.
 		filtered
