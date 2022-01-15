@@ -136,7 +136,7 @@ public static class OptionExtensions
 	/// <param name="predicate">Condition to check</param>
 	/// <typeparam name="T">Underlying type</typeparam>
 	/// <returns>Some if value present and satisfies condition, None if otherwise.</returns>
-	public static Option<T> Where<T>(this Option<T> option, Func<T, bool> predicate)
+	public static Option<T> Filter<T>(this Option<T> option, Func<T, bool> predicate)
 	{
 		return option
 			.Match(v => predicate(v) ? option : Of.None, () => Of.None);

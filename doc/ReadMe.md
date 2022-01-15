@@ -31,7 +31,7 @@ represent an error that occured.
 		
 		// if parsedOptional contains a value AND if this value satisfies the condition (>100)
 		// then filtered becomes an optional with this value. Otherwise it gets to None.
-		var filtered = parsedOptional.Where(i => i > 100);
+		var filtered = parsedOptional.Filter(i => i > 100);
 
 		// we can use do to utilize to value without a result, i.e. for example to log.
 		filtered

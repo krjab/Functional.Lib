@@ -127,7 +127,7 @@ public class OptionExtensionsTests
 		const int testedVal = 100;
 		Option<int> op1 = testedVal;
 
-		op1.Where(x => x == testedVal).Match(x => true, () => false).Should().BeTrue();
-		op1.Where(x => x < testedVal).Match(x => true, () => false).Should().BeFalse();
+		op1.Filter(x => x == testedVal).Match(x => true, () => false).Should().BeTrue();
+		op1.Filter(x => x < testedVal).Match(x => true, () => false).Should().BeFalse();
 	}
 }
