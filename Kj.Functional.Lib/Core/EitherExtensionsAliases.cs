@@ -3,7 +3,7 @@ namespace Kj.Functional.Lib.Core;
 public static class EitherExtensionsAliases
 {
 	/// <summary>
-	/// Maps the result part to <see cref="TMapped"/>
+	/// Maps the result part to TMapped
 	/// </summary>
 	/// <param name="either">Structure to map</param>
 	/// <param name="mapFunc">Map function</param>
@@ -18,7 +18,7 @@ public static class EitherExtensionsAliases
 	}
 	
 	/// <summary>
-	/// Maps the success result (if present) to task returning <see cref="TMapped"/>
+	/// Maps the success result (if present) to task returning TMapped/>
 	/// </summary>
 	/// <param name="either">Either structure to map</param>
 	/// <param name="mapLeft">Map function</param>
@@ -34,7 +34,7 @@ public static class EitherExtensionsAliases
 	
 		
 	/// <summary>
-	/// Maps the result part to <see cref="TMapped"/>
+	/// Maps the result part to TMapped
 	/// </summary>
 	/// <param name="either">Structure to map</param>
 	/// <param name="mapRight">Error Map function</param>

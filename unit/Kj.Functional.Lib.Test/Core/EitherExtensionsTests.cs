@@ -138,7 +138,7 @@ public class EitherExtensionsTests
 		Func<decimal, Task<Either<int, string>>> bindFunc = _ => Task.FromResult(boundVal);
 		Func<decimal, Task<Either<int, string>>> bindFunc2 = _ => Task.FromResult(boundVal2);
 		
-		Task<Either<decimal, string>> initialTask = Task.FromResult((Either<decimal,string>) 123M);
+		Task<Either<decimal, string>> initialTask = Task.FromResult(Either<decimal,string>.Left(123M));
 
 		var bound = await initialTask
 			.BindLeftAsync(s => bindFunc(s))

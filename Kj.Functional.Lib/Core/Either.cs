@@ -27,12 +27,12 @@ public readonly struct Either<TL, TR>
 		}
 	}
 
-	internal static Either<TL, TR> Left(TL leftVal)
+	public static Either<TL, TR> Left(TL leftVal)
 	{
 		return new Either<TL, TR>(leftVal, None.Default);
 	} 
 	
-	internal static Either<TL, TR> Right(TR rightVal)
+	public static Either<TL, TR> Right(TR rightVal)
 	{
 		return new Either<TL, TR>( None.Default, rightVal);
 	}
