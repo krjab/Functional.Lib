@@ -31,4 +31,23 @@ Avoid having to check for null values with usage of _Option_ and _Either_.
 
 `
 
+## How to use an _Either_:
 
+
+		string stringToParse = "123";
+
+       // ParseString return Either<int, string> (depending if successful or not)
+		var parseResult = ParseString(stringToParse);
+		var finalResult = parseResult
+			// we can (although we don't have to) utilize the value contained in Either for example to log
+			.Do(
+				lv=>Console.WriteLine($"Correct value of {lv}"),
+				rv=>Console.WriteLine($"error: {rv}")
+				)	
+			//
+			.Match(
+				i => $"Length of {i}",
+				errorText => $"Parse error: {errorText}");
+
+
+	
