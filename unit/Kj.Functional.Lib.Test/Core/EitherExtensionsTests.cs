@@ -138,7 +138,7 @@ public class EitherExtensionsTests
 		Func<decimal, Task<Either<int, string>>> bindFunc = _ => Task.FromResult(boundVal);
 		Func<decimal, Task<Either<int, string>>> bindFunc2 = _ => Task.FromResult(boundVal2);
 		
-		Task<Either<decimal, string>> initialTask = Task.FromResult((Either<decimal,string>) 123M);
+		Task<Either<decimal, string>> initialTask = Task.FromResult(Either<decimal,string>.Left(123M));
 
 		var bound = await initialTask
 			.BindLeftAsync(s => bindFunc(s))
@@ -172,5 +172,62 @@ public class EitherExtensionsTests
 		either
 			.Do(i => Assert.Fail(),
 				s => s.Should().Be(someValue));
+	}
+	
+	[Test]
+	public async Task Do_With_LeftResultAsync()
+	{
+		int someValue = _fixture.Create<int>();
+		Either<int, string> either = someValue;
+
+		Func<int, Task> leftTaskFunc = i =>
+		{
+			i.Should().Be(someValue);
+			return Task.CompletedTask;
+		};
+
+		await either
+			.DoAsync(i => leftTaskFunc(i),
+				_ => Assert.Fail());
+	}
+	
+	[Test]
+	public async Task Do_With_RightResultAsync()
+	{
+		string someValue = _fixture.Create<string>();
+		Either<int, string> either = someValue;
+
+		Func<string, Task> rightTaskFunc = i =>
+		{
+			i.Should().Be(someValue);
+			return Task.CompletedTask;
+		};
+		
+		await either
+			.DoAsync(i => Assert.Fail(),
+				s => rightTaskFunc(s));
+	}
+	
+	[Test]
+	public async Task Do_With_RightResultAsync_ForBothAsync()
+	{
+		string someValue = _fixture.Create<string>();
+		Either<int, string> either = someValue;
+
+		Func<string, Task> rightTaskFunc = i =>
+		{
+			i.Should().Be(someValue);
+			return Task.CompletedTask;
+		};
+
+		Func<int, Task> leftTaskFunc = i =>
+		{
+			Assert.Fail();
+			return Task.CompletedTask;
+		};
+		
+		await either
+			.DoAsync(i => leftTaskFunc(i),
+				s => rightTaskFunc(s));
 	}
 }

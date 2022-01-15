@@ -1,11 +1,9 @@
-using JetBrains.Annotations;
-
 namespace Kj.Functional.Lib.Core;
 
 public static class EitherExtensions
 {
 	/// <summary>
-	/// Maps the left side result (if present) to <see cref="TMapped"/>
+	/// Maps the left side result (if present) to TMapped
 	/// </summary>
 	/// <param name="either">Either structure to map</param>
 	/// <param name="mapLeft">Map function</param>
@@ -13,7 +11,6 @@ public static class EitherExtensions
 	/// <typeparam name="TR">right result type</typeparam>
 	/// <typeparam name="TMapped">target type</typeparam>
 	/// <returns>mapped instance of <see cref="Either{TL,TR}"/></returns>
-	[MustUseReturnValue]
 	public static Either<TMapped, TR> MapLeft<TL, TR, TMapped>(this Either<TL, TR> either, Func<TL, TMapped> mapLeft)
 	{
 		return either
@@ -52,7 +49,6 @@ public static class EitherExtensions
 	/// <typeparam name="TR"></typeparam>
 	/// <typeparam name="TMapped"></typeparam>
 	/// <returns></returns>
-	[MustUseReturnValue]
 	public static async Task<Either<TMapped, TR>> MapLeftAsync<TL, TR, TMapped>(this Task<Either<TL, TR>> thisTask,
 		Func<TL, Task<TMapped>> mapLeft)
 	{
@@ -61,7 +57,7 @@ public static class EitherExtensions
 	}
 
 	/// <summary>
-	/// Maps the right side result (if present) to <see cref="TMapped"/>
+	/// Maps the right side result (if present) to TMapped.
 	/// </summary>
 	/// <param name="either">Either structure to map</param>
 	/// <param name="mapRight">Map function</param>
@@ -69,7 +65,6 @@ public static class EitherExtensions
 	/// <typeparam name="TR">right result type</typeparam>
 	/// <typeparam name="TMapped">target type</typeparam>
 	/// <returns>mapped instance of <see cref="Either{TL,TR}"/></returns>
-	[MustUseReturnValue]
 	public static Either<TL, TMapped> MapRight<TL, TR, TMapped>(this Either<TL, TR> either, Func<TR, TMapped> mapRight)
 	{
 		return either
@@ -88,7 +83,6 @@ public static class EitherExtensions
 	/// <typeparam name="TR">Right side value type</typeparam>
 	/// <typeparam name="TMapped">Mapped type</typeparam>
 	/// <returns>mapped instance of <see cref="Either{TMapped,TR}"/></returns>
-	[MustUseReturnValue]
 	public static Either<TMapped, TR> BindLeft<TL, TR, TMapped>(this Either<TL, TR> either,
 		Func<TL, Either<TMapped, TR>> mapLeft)
 	{
@@ -98,7 +92,7 @@ public static class EitherExtensions
 	}
 	
 	/// <summary>
-	/// Uses the left side result (if present) as parameter to another Task<Either> returning function and returns
+	/// Uses the left side result (if present) as parameter to another Task of Either returning function and returns
 	/// this next function's result.
 	/// </summary>
 	/// <param name="either">Either structure to map</param>
@@ -107,7 +101,6 @@ public static class EitherExtensions
 	/// <typeparam name="TR">Right side value type</typeparam>
 	/// <typeparam name="TMapped">Mapped type</typeparam>
 	/// <returns>mapped instance of <see cref="Either{TMapped,TR}"/></returns>
-	[MustUseReturnValue]
 	public static Task<Either<TMapped, TR>> BindLeftAsync<TL, TR, TMapped>(this Either<TL, TR> either,
 		Func<TL, Task<Either<TMapped, TR>>> mapLeft)
 	{
@@ -126,11 +119,10 @@ public static class EitherExtensions
 	/// <typeparam name="TR">Right side type</typeparam>
 	/// <typeparam name="TMapped">Mapped type</typeparam>
 	/// <returns>Task returning Either (TMapped, TR) /></returns>
-	[MustUseReturnValue]
-	public static async Task<Either<TMapped, TR>> BindLeftAsync<TL, TR, TMapped>(this Task<Either<TL, TR>> eitherTask,
+	public static async Task<Either<TMapped, TR>> BindLeftAsync<TL, TR, TMapped>(this Task<Either<TL, TR>> thisTask,
 		Func<TL, Task<Either<TMapped, TR>>> mapLeft)
 	{
-		var takResult = await eitherTask;
+		var takResult = await thisTask;
 		return await takResult
 			.BindLeftAsync(mapLeft);
 	}
@@ -145,7 +137,6 @@ public static class EitherExtensions
 	/// <typeparam name="TR">right side type</typeparam>
 	/// <typeparam name="TMapped">Mapped type</typeparam>
 	/// <returns>Task returning TMapped</returns>
-	[MustUseReturnValue]
 	public static async Task<TMapped> MatchAsync<TL, TR, TMapped>(this Task<Either<TL, TR>> thisTask,
 		Func<TL, TMapped> left, Func<TR, TMapped> right)
 	{
@@ -167,7 +158,6 @@ public static class EitherExtensions
 	/// <typeparam name="TR">right side type</typeparam>
 	/// <typeparam name="TMapped">Mapped type</typeparam>
 	/// <returns>Task returning TMapped</returns>
-	[MustUseReturnValue]
 	public static async Task<TMapped> MatchAsync<TL, TR, TMapped>(this Task<Either<TL, TR>> thisTask,
 		Func<TL, Task<TMapped>> left, Func<TR, TMapped> right)
 	{
@@ -188,7 +178,6 @@ public static class EitherExtensions
 	/// <typeparam name="TL">Left side type</typeparam>
 	/// <typeparam name="TR">Right side type</typeparam>
 	/// <returns>Original structure</returns>
-	[MustUseReturnValue]
 	public static Either<TL, TR> Do<TL, TR>(this Either<TL, TR> either, Action<TL> leftResultAction,
 		Action<TR> rightResultAction)
 	{
@@ -196,13 +185,91 @@ public static class EitherExtensions
 			.Match(
 				lv =>
 				{
-					leftResultAction.ToFunc()(lv);
+					leftResultAction(lv);
 					return either;
 				},
 				rv =>
 				{
-					rightResultAction.ToFunc()(rv);
+					rightResultAction(rv);
 					return either;
+				}
+			);
+	}
+	
+	/// <summary>
+	/// Performs a side effect causing action on left or right side value.
+	/// </summary>
+	/// <param name="thisEither">Either structure to map</param>
+	/// <param name="leftResultAction">action to perform on the left side value</param>
+	/// <param name="rightResultTaskFunc">task returning function to perform on the right side value</param>
+	/// <typeparam name="TL">Left side type</typeparam>
+	/// <typeparam name="TR">Right side type</typeparam>
+	/// <returns>Original structure</returns>
+	public static Task<Either<TL, TR>> DoAsync<TL, TR>(this Either<TL, TR> thisEither, Action<TL> leftResultAction,
+		Func<TR, Task> rightResultTaskFunc)
+	{
+		return thisEither
+			.Match(lv =>
+				{
+					leftResultAction(lv);
+					return Task.FromResult(thisEither);
+				},
+				rv =>
+				{
+					var taskFunc = () => rightResultTaskFunc(rv);
+					return taskFunc.DoTaskAndReturn(thisEither);
+				}
+			);
+	}
+
+	/// <summary>
+	/// Performs a side effect causing action on left or right side value.
+	/// </summary>
+	/// <param name="thisEither">Either structure to map</param>
+	/// <param name="leftResultTaskFunc">task returning function to perform on the left side value</param>
+	/// <param name="rightResultAction">action to perform on the right side value</param>
+	/// <typeparam name="TL">Left side type</typeparam>
+	/// <typeparam name="TR">Right side type</typeparam>
+	/// <returns>Original structure</returns>
+	public static Task<Either<TL, TR>> DoAsync<TL, TR>(this Either<TL, TR> thisEither, Func<TL, Task> leftResultTaskFunc,
+		Action<TR> rightResultAction)
+	{
+		return thisEither
+			.Match(lv =>
+				{
+					var taskFunc = () => leftResultTaskFunc(lv);
+					return taskFunc.DoTaskAndReturn(thisEither);
+				},
+				rv =>
+				{
+					rightResultAction(rv);
+					return Task.FromResult(thisEither);
+				}
+			);
+	}
+	
+	/// <summary>
+	/// Performs a side effect causing action on left or right side value.
+	/// </summary>
+	/// <param name="thisEither">Either structure to map</param>
+	/// <param name="leftResultTaskFunc">task returning function to perform on the left side value</param>
+	/// <param name="rightResultTaskFunc">task returning function to perform on the right side value</param>
+	/// <typeparam name="TL">Left side type</typeparam>
+	/// <typeparam name="TR">Right side type</typeparam>
+	/// <returns>Original structure</returns>
+	public static Task<Either<TL, TR>> DoAsync<TL, TR>(this Either<TL, TR> thisEither, Func<TL, Task> leftResultTaskFunc,
+		Func<TR, Task> rightResultTaskFunc)
+	{
+		return thisEither
+			.Match(lv =>
+				{
+					var taskFunc = () => leftResultTaskFunc(lv);
+					return taskFunc.DoTaskAndReturn(thisEither);
+				},
+				rv =>
+				{
+					var taskFunc = () => rightResultTaskFunc(rv);
+					return taskFunc.DoTaskAndReturn(thisEither);;
 				}
 			);
 	}

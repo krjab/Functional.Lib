@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using Kj.Functional.Lib.Core;
@@ -64,6 +66,19 @@ public class OptionExtensionsTests
 		
 		Option<string> someStr = testedVal;
 		var bound = optionInt.Bind(x => someStr);
+		bound.Do(x => x.Should().Be(testedVal), Assert.Fail);
+	}
+	
+	[Test]
+	public async Task Bind_SomeAsync()
+	{
+		Option<int> optionInt = _fixture.Create<int>();
+		string testedVal = _fixture.Create<string>();
+		
+		Option<string> someStr = testedVal;
+		Func<int, Task<Option<string>>> bindFunc = i => Task.FromResult(someStr);
+		
+		var bound = await optionInt.BindAsync(x => bindFunc(x));
 		bound.Do(x => x.Should().Be(testedVal), Assert.Fail);
 	}
 	
