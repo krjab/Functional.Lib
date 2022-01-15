@@ -3,7 +3,7 @@ namespace Kj.Functional.Lib.Core;
 public static class EitherExtensions
 {
 	/// <summary>
-	/// Maps the left side result (if present) to <see cref="TMapped"/>
+	/// Maps the left side result (if present) to TMapped
 	/// </summary>
 	/// <param name="either">Either structure to map</param>
 	/// <param name="mapLeft">Map function</param>
@@ -57,7 +57,7 @@ public static class EitherExtensions
 	}
 
 	/// <summary>
-	/// Maps the right side result (if present) to <see cref="TMapped"/>
+	/// Maps the right side result (if present) to TMapped.
 	/// </summary>
 	/// <param name="either">Either structure to map</param>
 	/// <param name="mapRight">Map function</param>
@@ -92,7 +92,7 @@ public static class EitherExtensions
 	}
 	
 	/// <summary>
-	/// Uses the left side result (if present) as parameter to another Task<Either> returning function and returns
+	/// Uses the left side result (if present) as parameter to another Task of Either returning function and returns
 	/// this next function's result.
 	/// </summary>
 	/// <param name="either">Either structure to map</param>
@@ -119,10 +119,10 @@ public static class EitherExtensions
 	/// <typeparam name="TR">Right side type</typeparam>
 	/// <typeparam name="TMapped">Mapped type</typeparam>
 	/// <returns>Task returning Either (TMapped, TR) /></returns>
-	public static async Task<Either<TMapped, TR>> BindLeftAsync<TL, TR, TMapped>(this Task<Either<TL, TR>> eitherTask,
+	public static async Task<Either<TMapped, TR>> BindLeftAsync<TL, TR, TMapped>(this Task<Either<TL, TR>> thisTask,
 		Func<TL, Task<Either<TMapped, TR>>> mapLeft)
 	{
-		var takResult = await eitherTask;
+		var takResult = await thisTask;
 		return await takResult
 			.BindLeftAsync(mapLeft);
 	}

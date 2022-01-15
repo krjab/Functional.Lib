@@ -57,7 +57,7 @@ public static class OptionExtensions
 	/// Performs a side effect causing task returning function on underlying value (if present).
 	/// </summary>
 	/// <param name="opt">Option to use</param>
-	/// <param name="action">Action to perform</param>
+	/// <param name="taskFunc">Action to perform</param>
 	/// <typeparam name="T">Underlying type</typeparam>
 	/// <returns>This Option instance</returns>
 	public static Task<Option<T>> ForEachAsync<T>(this Option<T> opt, Func<T,Task> taskFunc)
