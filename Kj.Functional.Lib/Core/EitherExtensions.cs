@@ -1,5 +1,3 @@
-using JetBrains.Annotations;
-
 namespace Kj.Functional.Lib.Core;
 
 public static class EitherExtensions
@@ -13,7 +11,6 @@ public static class EitherExtensions
 	/// <typeparam name="TR">right result type</typeparam>
 	/// <typeparam name="TMapped">target type</typeparam>
 	/// <returns>mapped instance of <see cref="Either{TL,TR}"/></returns>
-	[MustUseReturnValue]
 	public static Either<TMapped, TR> MapLeft<TL, TR, TMapped>(this Either<TL, TR> either, Func<TL, TMapped> mapLeft)
 	{
 		return either
@@ -52,7 +49,6 @@ public static class EitherExtensions
 	/// <typeparam name="TR"></typeparam>
 	/// <typeparam name="TMapped"></typeparam>
 	/// <returns></returns>
-	[MustUseReturnValue]
 	public static async Task<Either<TMapped, TR>> MapLeftAsync<TL, TR, TMapped>(this Task<Either<TL, TR>> thisTask,
 		Func<TL, Task<TMapped>> mapLeft)
 	{
@@ -69,7 +65,6 @@ public static class EitherExtensions
 	/// <typeparam name="TR">right result type</typeparam>
 	/// <typeparam name="TMapped">target type</typeparam>
 	/// <returns>mapped instance of <see cref="Either{TL,TR}"/></returns>
-	[MustUseReturnValue]
 	public static Either<TL, TMapped> MapRight<TL, TR, TMapped>(this Either<TL, TR> either, Func<TR, TMapped> mapRight)
 	{
 		return either
@@ -88,7 +83,6 @@ public static class EitherExtensions
 	/// <typeparam name="TR">Right side value type</typeparam>
 	/// <typeparam name="TMapped">Mapped type</typeparam>
 	/// <returns>mapped instance of <see cref="Either{TMapped,TR}"/></returns>
-	[MustUseReturnValue]
 	public static Either<TMapped, TR> BindLeft<TL, TR, TMapped>(this Either<TL, TR> either,
 		Func<TL, Either<TMapped, TR>> mapLeft)
 	{
@@ -107,7 +101,6 @@ public static class EitherExtensions
 	/// <typeparam name="TR">Right side value type</typeparam>
 	/// <typeparam name="TMapped">Mapped type</typeparam>
 	/// <returns>mapped instance of <see cref="Either{TMapped,TR}"/></returns>
-	[MustUseReturnValue]
 	public static Task<Either<TMapped, TR>> BindLeftAsync<TL, TR, TMapped>(this Either<TL, TR> either,
 		Func<TL, Task<Either<TMapped, TR>>> mapLeft)
 	{
@@ -126,7 +119,6 @@ public static class EitherExtensions
 	/// <typeparam name="TR">Right side type</typeparam>
 	/// <typeparam name="TMapped">Mapped type</typeparam>
 	/// <returns>Task returning Either (TMapped, TR) /></returns>
-	[MustUseReturnValue]
 	public static async Task<Either<TMapped, TR>> BindLeftAsync<TL, TR, TMapped>(this Task<Either<TL, TR>> eitherTask,
 		Func<TL, Task<Either<TMapped, TR>>> mapLeft)
 	{
@@ -145,7 +137,6 @@ public static class EitherExtensions
 	/// <typeparam name="TR">right side type</typeparam>
 	/// <typeparam name="TMapped">Mapped type</typeparam>
 	/// <returns>Task returning TMapped</returns>
-	[MustUseReturnValue]
 	public static async Task<TMapped> MatchAsync<TL, TR, TMapped>(this Task<Either<TL, TR>> thisTask,
 		Func<TL, TMapped> left, Func<TR, TMapped> right)
 	{
@@ -167,7 +158,6 @@ public static class EitherExtensions
 	/// <typeparam name="TR">right side type</typeparam>
 	/// <typeparam name="TMapped">Mapped type</typeparam>
 	/// <returns>Task returning TMapped</returns>
-	[MustUseReturnValue]
 	public static async Task<TMapped> MatchAsync<TL, TR, TMapped>(this Task<Either<TL, TR>> thisTask,
 		Func<TL, Task<TMapped>> left, Func<TR, TMapped> right)
 	{
@@ -188,7 +178,6 @@ public static class EitherExtensions
 	/// <typeparam name="TL">Left side type</typeparam>
 	/// <typeparam name="TR">Right side type</typeparam>
 	/// <returns>Original structure</returns>
-	[MustUseReturnValue]
 	public static Either<TL, TR> Do<TL, TR>(this Either<TL, TR> either, Action<TL> leftResultAction,
 		Action<TR> rightResultAction)
 	{

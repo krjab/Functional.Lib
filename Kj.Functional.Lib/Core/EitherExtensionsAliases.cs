@@ -1,5 +1,3 @@
-using JetBrains.Annotations;
-
 namespace Kj.Functional.Lib.Core;
 
 public static class EitherExtensionsAliases
@@ -27,7 +25,6 @@ public static class EitherExtensionsAliases
 	/// <typeparam name="TMapped">success result type</typeparam>
 	/// <typeparam name="TResult">error result type</typeparam>
 	/// <returns>mapped instance of <see cref="Either{TL,TR}"/></returns>
-	[MustUseReturnValue]
 	public static Task<Either<TMapped, TError>> MapResultAsync<TResult, TError, TMapped>(this Either<TResult, TError> either,
 		Func<TResult, Task<TMapped>> mapLeft)
 	{
@@ -35,7 +32,6 @@ public static class EitherExtensionsAliases
 	}
 	
 		
-	[MustUseReturnValue]
 	public static Either<TResult, TMapped> MapError<TResult, TError, TMapped>(this Either<TResult, TError> either, Func<TError, TMapped> mapRight)
 	{
 		return either.MapRight(mapRight);
@@ -47,7 +43,6 @@ public static class EitherExtensionsAliases
 		return either.BindLeftAsync(mapResult);
 	}
 	
-	[MustUseReturnValue]
 	public static async Task<Either<TMapped, TError>> BindResultAsync<TResult, TError, TMapped>(this Task<Either<TResult, TError>> eitherTask,
 		Func<TResult, Task<Either<TMapped, TError>>> mapResult)
 	{

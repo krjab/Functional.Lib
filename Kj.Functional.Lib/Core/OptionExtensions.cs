@@ -1,5 +1,3 @@
-using JetBrains.Annotations;
-using Option;
 
 namespace Kj.Functional.Lib.Core;
 
@@ -13,7 +11,6 @@ public static class OptionExtensions
 	/// <typeparam name="TS">input option type</typeparam>
 	/// <typeparam name="TR">mapped option type</typeparam>
 	/// <returns>Option (Some with mapped value or None)</returns>
-	[MustUseReturnValue]
 	public static Option<TR> Map<TS, TR>(this Option<TS> optT, Func<TS, TR> f)
 		=> optT.Match<Option<TR>>(
 			t => Of.Some(f(t)),
@@ -79,7 +76,6 @@ public static class OptionExtensions
 	/// <typeparam name="T">Source underlying type.</typeparam>
 	/// <typeparam name="TMapped">Target underlying type</typeparam>
 	/// <returns>Some of mapped value or none</returns>
-	[MustUseReturnValue]
 	public static Option<TMapped> Bind<T, TMapped>(this Option<T> optT, Func<T, Option<TMapped>> f)
 		=> optT.Match(
 			f,
@@ -113,7 +109,6 @@ public static class OptionExtensions
 	/// <typeparam name="TR">Right side type</typeparam>
 	/// <typeparam name="TMapped">Mapped target type</typeparam>
 	/// <returns>Instance ot Either(TMapped, TR)</returns>
-	[MustUseReturnValue]
 	public static Either<TMapped, TR> Bind<TSource, TR, TMapped>(this Option<TSource> option,
 		Func<TSource, Either<TMapped, TR>> bindFunc,
 		Func<TR> createRightFunc)
@@ -129,7 +124,6 @@ public static class OptionExtensions
 	/// <param name="input">input collection</param>
 	/// <typeparam name="T">Underlying type</typeparam>
 	/// <returns>Collection of extracted (present) values</returns>
-	[MustUseReturnValue]
 	public static IEnumerable<T> Bind<T>(this IEnumerable<Option<T>> input)
 	{
 		return input.SelectMany(t => t);
@@ -142,7 +136,6 @@ public static class OptionExtensions
 	/// <param name="predicate">Condition to check</param>
 	/// <typeparam name="T">Underlying type</typeparam>
 	/// <returns>Some if value present and satisfies condition, None if otherwise.</returns>
-	[MustUseReturnValue]
 	public static Option<T> Where<T>(this Option<T> option, Func<T, bool> predicate)
 	{
 		return option
