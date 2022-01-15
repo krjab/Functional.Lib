@@ -101,7 +101,7 @@ public class OptionExtensionsTests
 		Option<int> some = someVal;
 
 		some
-			.Bind(BindFunc,()=>"err")
+			.Bind(i=>BindFunc(i),()=>"err")
 			.Do(vl => vl.Should().Be(someVal * 2),
 				vr => Assert.Fail());
 	}

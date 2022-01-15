@@ -27,16 +27,24 @@ public readonly struct Either<TL, TR>
 		}
 	}
 
-	internal static Either<TL, TR> Left<TL, TR>(TL leftVal)
+	internal static Either<TL, TR> Left(TL leftVal)
 	{
 		return new Either<TL, TR>(leftVal, None.Default);
 	} 
 	
-	internal static Either<TL, TR> Right<TL, TR>(TR rightVal)
+	internal static Either<TL, TR> Right(TR rightVal)
 	{
 		return new Either<TL, TR>( None.Default, rightVal);
 	}
 
+	/// <summary>
+	/// Maps the left or right side value to another target type.
+	/// </summary>
+	/// <param name="left">Left side value mapping function</param>
+	/// <param name="right">Right side value mapping function</param>
+	/// <typeparam name="T">Underlying type</typeparam>
+	/// <returns>Instance of T</returns>
+	/// <exception cref="ArgumentException">Throws an exception if the object has not been initialised correctly.</exception>
 	public T Match<T>(Func<TL, T> left, Func<TR, T> right)
 	{
 		if (_leftVal.HasValue)
@@ -48,8 +56,8 @@ public readonly struct Either<TL, TR>
 	}
 	
 	public static implicit operator Either<TL,TR>(TL left)
-		=> Left<TL, TR>(left);
+		=> Left(left);
 	
 	public static implicit operator Either<TL,TR>(TR right)
-		=> Right<TL, TR>(right);
+		=> Right(right);
 }
