@@ -11,8 +11,12 @@
         <Company>---</Company>
         <PackageDescription>Small functional library for C#</PackageDescription>
         <RepositoryUrl>https://github.com/krjab/Functional.Lib</RepositoryUrl>
+        
     </PropertyGroup>
 
+    <PropertyGroup>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
     <ItemGroup>
       <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
     </ItemGroup>
