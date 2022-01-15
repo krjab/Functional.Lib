@@ -126,4 +126,26 @@ public class EitherExtensionsTests
 				return -1;
 			}).Should().Be(val);
 	}
+
+	[Test]
+	public void Do_With_LeftResult()
+	{
+		int someValue = _fixture.Create<int>();
+		Either<int, string> either = someValue;
+
+		either
+			.Do(i => i.Should().Be(someValue),
+				_ => Assert.Fail());
+	}
+	
+	[Test]
+	public void Do_With_RightResult()
+	{
+		string someValue = _fixture.Create<string>();
+		Either<int, string> either = someValue;
+
+		either
+			.Do(i => Assert.Fail(),
+				s => s.Should().Be(someValue));
+	}
 }

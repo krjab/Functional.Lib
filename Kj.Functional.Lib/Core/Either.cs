@@ -27,12 +27,12 @@ public readonly struct Either<TL, TR>
 		}
 	}
 
-	internal static Either<TL, TR> Left<TL, TR>(TL leftVal)
+	internal static Either<TL, TR> Left(TL leftVal)
 	{
 		return new Either<TL, TR>(leftVal, None.Default);
 	} 
 	
-	internal static Either<TL, TR> Right<TL, TR>(TR rightVal)
+	internal static Either<TL, TR> Right(TR rightVal)
 	{
 		return new Either<TL, TR>( None.Default, rightVal);
 	}
@@ -48,8 +48,8 @@ public readonly struct Either<TL, TR>
 	}
 	
 	public static implicit operator Either<TL,TR>(TL left)
-		=> Left<TL, TR>(left);
+		=> Left(left);
 	
 	public static implicit operator Either<TL,TR>(TR right)
-		=> Right<TL, TR>(right);
+		=> Right(right);
 }

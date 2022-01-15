@@ -18,7 +18,7 @@ public static class EitherExtensions
 	{
 		return either
 			.Match(lv => mapLeft(lv),
-				Either<TMapped, TR>.Right<TMapped,TR>);
+				Either<TMapped, TR>.Right);
 	}
 
 	[MustUseReturnValue]
@@ -41,13 +41,13 @@ public static class EitherExtensions
 	{
 		return either
 			.Match(lv => mapLeft(lv).ToEitherTask<TMapped,TR>(),
-				rv => Task.FromResult(Either<TMapped, TR>.Right<TMapped, TR>(rv)));
+				rv => Task.FromResult(Either<TMapped, TR>.Right(rv)));
 	}
 	
 	private static async Task<Either<TL, TR>> ToEitherTask<TL,TR>(this Task<TL> mapTask)
 	{
 		var res = await mapTask;
-		return Either<TL,TR>.Left<TL, TR>(res);
+		return Either<TL,TR>.Left(res);
 	}
 
 	[MustUseReturnValue]
@@ -62,7 +62,7 @@ public static class EitherExtensions
 	public static Either<TL, TMapped> MapRight<TL, TR, TMapped>(this Either<TL, TR> either, Func<TR, TMapped> mapRight)
 	{
 		return either
-			.Match(Either<TL, TMapped>.Left<TL, TMapped>,
+			.Match(Either<TL, TMapped>.Left,
 				r => mapRight(r));
 	}
 
@@ -93,7 +93,7 @@ public static class EitherExtensions
 	{
 		return  either
 			.Match(mapLeft,
-				Either<TMapped, TR>.Right<TMapped, TR>);
+				Either<TMapped, TR>.Right);
 	}
 	
 	[MustUseReturnValue]
@@ -102,7 +102,7 @@ public static class EitherExtensions
 	{
 		return either
 			.Match(mapLeft,
-				rv => Task.FromResult(Either<TMapped, TR>.Right<TMapped, TR>(rv)));
+				rv => Task.FromResult(Either<TMapped, TR>.Right(rv)));
 		
 	}
 
@@ -128,6 +128,25 @@ public static class EitherExtensions
 			.Match(left,
 				rv => Task.FromResult(right(rv)));
 		
+	}
+
+	[MustUseReturnValue]
+	public static Either<TL, TR> Do<TR, TL>(this Either<TL, TR> either, Action<TL> leftResultAction,
+		Action<TR> rightResultAction)
+	{
+		return either
+			.Match(
+				lv =>
+				{
+					leftResultAction.ToFunc()(lv);
+					return either;
+				},
+				rv =>
+				{
+					rightResultAction.ToFunc()(rv);
+					return either;
+				}
+			);
 	}
 
 }
