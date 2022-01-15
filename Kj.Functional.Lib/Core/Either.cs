@@ -37,6 +37,14 @@ public readonly struct Either<TL, TR>
 		return new Either<TL, TR>( None.Default, rightVal);
 	}
 
+	/// <summary>
+	/// Maps the left or right side value to another target type.
+	/// </summary>
+	/// <param name="left">Left side value mapping function</param>
+	/// <param name="right">Right side value mapping function</param>
+	/// <typeparam name="T">Underlying type</typeparam>
+	/// <returns>Instance of T</returns>
+	/// <exception cref="ArgumentException">Throws an exception if the object has not been initialised correctly.</exception>
 	public T Match<T>(Func<TL, T> left, Func<TR, T> right)
 	{
 		if (_leftVal.HasValue)
