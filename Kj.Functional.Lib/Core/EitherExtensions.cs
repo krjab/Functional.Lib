@@ -196,12 +196,12 @@ public static class EitherExtensions
 			.Match(
 				lv =>
 				{
-					leftResultAction.ToFunc()(lv);
+					leftResultAction(lv);
 					return either;
 				},
 				rv =>
 				{
-					rightResultAction.ToFunc()(rv);
+					rightResultAction(rv);
 					return either;
 				}
 			);
@@ -228,16 +228,9 @@ public static class EitherExtensions
 				rv =>
 				{
 					var taskFunc = () => rightResultTaskFunc(rv);
-					return taskFunc.DoTaskAndReturnEither(thisEither);
+					return taskFunc.DoTaskAndReturn(thisEither);
 				}
 			);
-	}
-
-	private static async Task<Either<TL, TR>> DoTaskAndReturnEither<TL, TR>(this Func<Task> rightResultTaskFunc,
-		Either<TL, TR> toReturn)
-	{
-		await rightResultTaskFunc();
-		return toReturn;
 	}
 
 	/// <summary>
@@ -256,7 +249,7 @@ public static class EitherExtensions
 			.Match(lv =>
 				{
 					var taskFunc = () => leftResultTaskFunc(lv);
-					return taskFunc.DoTaskAndReturnEither(thisEither);
+					return taskFunc.DoTaskAndReturn(thisEither);
 				},
 				rv =>
 				{
@@ -282,12 +275,12 @@ public static class EitherExtensions
 			.Match(lv =>
 				{
 					var taskFunc = () => leftResultTaskFunc(lv);
-					return taskFunc.DoTaskAndReturnEither(thisEither);
+					return taskFunc.DoTaskAndReturn(thisEither);
 				},
 				rv =>
 				{
 					var taskFunc = () => rightResultTaskFunc(rv);
-					return taskFunc.DoTaskAndReturnEither(thisEither);;
+					return taskFunc.DoTaskAndReturn(thisEither);;
 				}
 			);
 	}

@@ -33,4 +33,12 @@ public static class FuncExtensions
 			return Unit.Default;
 		};
 	}
+	
+	
+	internal static async Task<T> DoTaskAndReturn<T>(this Func<Task> rightResultTaskFunc,
+		T toReturn)
+	{
+		await rightResultTaskFunc();
+		return toReturn;
+	}
 }

@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using Kj.Functional.Lib.Core;
@@ -64,6 +66,24 @@ public class OptionTests
 
 		var mutable = -1;
 		op.ForEach(x=>mutable=x);
+		mutable.Should().Be(initialVal);
+	}
+	
+	[Test]
+	public async Task ForEachAsync_With_Value()
+	{
+		int initialVal = _fixture.CreateInt(10, 100);
+		Option<int> op = initialVal;
+		
+
+		var mutable = -1;
+		Func<int, Task> asyncAction = i =>
+		{
+			mutable = i;
+			return Task.CompletedTask;
+		};
+			
+		await op.ForEachAsync(x=>asyncAction(x));
 		mutable.Should().Be(initialVal);
 	}
 	
