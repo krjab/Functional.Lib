@@ -105,6 +105,21 @@ public static class EitherExtensions
 				rv => Task.FromResult(Either<TMapped, TR>.Right(rv)));
 		
 	}
+	
+	public static Task<Either<TMapped, TError>> BindResultAsync<TResult, TError, TMapped>(this Either<TResult, TError> either,
+		Func<TResult, Task<Either<TMapped, TError>>> mapResult)
+	{
+		return either.BindLeftAsync(mapResult);
+	}
+	
+	[MustUseReturnValue]
+	public static async Task<Either<TMapped, TError>> BindResultAsync<TResult, TError, TMapped>(this Task<Either<TResult, TError>> eitherTask,
+		Func<TResult, Task<Either<TMapped, TError>>> mapResult)
+	{
+		var takResult = await eitherTask;
+		return await takResult
+			.BindResultAsync(mapResult);
+	}
 
 	[MustUseReturnValue]
 	public static async Task<Either<TMapped, TR>> BindLeftAsync<TL, TR, TMapped>(this Task<Either<TL, TR>> eitherTask,

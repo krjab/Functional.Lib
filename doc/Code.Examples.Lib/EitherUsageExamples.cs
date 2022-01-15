@@ -64,9 +64,16 @@ public class EitherUsageExamples
 		
 		string inputString = "abc";
 
+		// Obtaining the result from the combined (chained) calls to consecutive methods.
+		// Each method gets called only if the preceeding one succeeds.
 		var combinedResult = await ParseAsync(inputString)
-			.BindLeftAsync(ValidateAsync)
-			.BindLeftAsync(ModifyUserAsync);
+			.BindResultAsync(ValidateAsync)
+			.BindResultAsync(ModifyUserAsync);
+		
+		// Now can use the result after the chained calls:
+		var finalResult = combinedResult
+			.Match(user => $"Processed user: {user.FirstName}",
+				err => $"Error: {err.ErrorText}");
 
 	}
 }
