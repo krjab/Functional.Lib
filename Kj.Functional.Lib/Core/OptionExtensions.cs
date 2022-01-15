@@ -67,6 +67,26 @@ public static class OptionExtensions
 		);
 
 	/// <summary>
+	/// Uses the underlying value (if present) to use by an Either returning function. 
+	/// </summary>
+	/// <param name="option">Option object</param>
+	/// <param name="bindFunc">Mapping function to consume the option's value (if present)</param>
+	/// <param name="createRightFunc">Function creating right side value (in case mapping from None)</param>
+	/// <typeparam name="TSource">Source underlying type</typeparam>
+	/// <typeparam name="TR">Right side type</typeparam>
+	/// <typeparam name="TMapped">Mapped target type</typeparam>
+	/// <returns>Instance ot Either(TMapped, TR)</returns>
+	[MustUseReturnValue]
+	public static Either<TMapped, TR> Bind<TSource, TR, TMapped>(this Option<TSource> option,
+		Func<TSource, Either<TMapped, TR>> bindFunc,
+		Func<TR> createRightFunc)
+	{
+		return option
+			.Match(bindFunc,
+				() => Either<TMapped, TR>.Right(createRightFunc()));
+	}
+	
+	/// <summary>
 	/// Extracts the present underlying values  from the elements within  the collection
 	/// </summary>
 	/// <param name="input">input collection</param>
