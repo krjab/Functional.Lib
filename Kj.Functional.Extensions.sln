@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kj.Functional.Lib.Extension
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{5F5B48F3-FFB6-43FE-91D0-1ED83C58E6FD}"
 	ProjectSection(SolutionItems) = preProject
-		doc\ReadMe.md = doc\ReadMe.md
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Code.Examples.Lib", "doc\Code.Examples.Lib\Code.Examples.Lib.csproj", "{FC527715-2D13-45C4-8E83-CC97BB0D5EB8}"
