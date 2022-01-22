@@ -141,5 +141,9 @@ public static class OptionExtensions
 		return option
 			.Match(v => predicate(v) ? option : Of.None, () => Of.None);
 	}
+	
+	// TODO - Documentation
+	public static Option<Func<T2, TR>> Map<T1, T2, TR>(this Option<T1> opt, Func<T1, T2, TR> func)
+		=> opt.Map(func.Curry());
 
 }

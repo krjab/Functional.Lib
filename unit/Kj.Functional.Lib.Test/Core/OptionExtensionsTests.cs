@@ -116,7 +116,7 @@ public class OptionExtensionsTests
 		Option<int> some = someVal;
 
 		some
-			.Bind(i=>BindFunc(i),()=>"err")
+			.Bind(BindFunc,()=>"err")
 			.Do(vl => vl.Should().Be(someVal * 2),
 				vr => Assert.Fail());
 	}
@@ -129,5 +129,20 @@ public class OptionExtensionsTests
 
 		op1.Filter(x => x == testedVal).Match(x => true, () => false).Should().BeTrue();
 		op1.Filter(x => x < testedVal).Match(x => true, () => false).Should().BeFalse();
+	}
+
+	[Test]
+	public void Map_Func()
+	{
+		int testedVal = _fixture.CreateInt(0, 100);
+		Option<int> option = testedVal;
+
+		Func<int, int> CreateMultiplyByFunc(int a) => b => a * b;
+		   
+		
+		var mappedToMultiplyByTestedVal = option.Map(CreateMultiplyByFunc);
+		mappedToMultiplyByTestedVal.Do(f => f(2).Should().Be(testedVal * 2),
+			Assert.Fail);
+		
 	}
 }

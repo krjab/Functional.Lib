@@ -37,4 +37,22 @@ public static class FuncExtensions
 		await rightResultTaskFunc();
 		return toReturn;
 	}
+	
+	// TODO - Documentation
+	public static Func<T2, TR> Apply<T1, T2, TR>(this Func<T1, T2, TR> f, T1 t1)
+		=> t2 => f(t1, t2);
+
+	// TODO - Documentation
+	public static Func<T2, T3, TR> Apply<T1, T2, T3, TR>(this Func<T1, T2, T3, TR> f, T1 t1)
+		=> (t2, t3) => f(t1, t2, t3);
+	
+	
+	// TODO - Documentation
+	public static Func<T1, Func<T2, TR>> Curry<T1, T2, TR>(this Func<T1, T2, TR> func)
+		=> t1 => t2 => func(t1, t2);
+	
+	// TODO - Documentation
+	public static Func<T1, Func<T2, Func<T3, TR>>> Curry<T1, T2, T3, TR>(this Func<T1, T2, T3, TR> func)
+		=> t1 => t2 => t3 => func(t1, t2, t3);
+	
 }
