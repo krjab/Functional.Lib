@@ -137,12 +137,16 @@ public class OptionExtensionsTests
 		int testedVal = _fixture.CreateInt(0, 100);
 		Option<int> option = testedVal;
 
-		Func<int, int> CreateMultiplyByFunc(int a) => b => a * b;
-		   
-		
+		Func<int, int> CreateMultiplyByFunc(int a)
+		{
+			return b => a * b;
+		}
+
+
 		var mappedToMultiplyByTestedVal = option.Map(CreateMultiplyByFunc);
 		mappedToMultiplyByTestedVal.Do(f => f(2).Should().Be(testedVal * 2),
 			Assert.Fail);
 		
 	}
+
 }

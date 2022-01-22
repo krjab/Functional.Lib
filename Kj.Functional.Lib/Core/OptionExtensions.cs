@@ -1,4 +1,6 @@
 
+using Option;
+
 namespace Kj.Functional.Lib.Core;
 
 public static class OptionExtensions
@@ -145,5 +147,18 @@ public static class OptionExtensions
 	// TODO - Documentation
 	public static Option<Func<T2, TR>> Map<T1, T2, TR>(this Option<T1> opt, Func<T1, T2, TR> func)
 		=> opt.Map(func.Curry());
-
+	
+	// TODO - Documentation
+	public static Option<TR> Apply<T, TR>(this Option<Func<T, TR>> thisOption, Option<T> anotherOption)
+	{
+		return thisOption.Match(
+			f => anotherOption.Match<Option<TR>>(
+				t => Of.Some(f(t)),
+				() => Of.None),
+			() => Of.None);
+	}
+	
+	// TODO - Documentation
+	public static Option<Func<T2, TR>> Apply<T1, T2, TR>(this Option<Func<T1, T2, TR>> thisOption, Option<T1> anotherOption)
+		=> Apply(thisOption.Map(f=>f.Curry()), anotherOption);
 }
