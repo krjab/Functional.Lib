@@ -47,11 +47,26 @@ public static class FuncExtensions
 		=> (t2, t3) => f(t1, t2, t3);
 	
 	
-	// TODO - Documentation
+	/// <summary>
+	/// Curries to Func T1 -> (T2 -> TR)
+	/// </summary>
+	/// <param name="func">input func</param>
+	/// <typeparam name="T1"></typeparam>
+	/// <typeparam name="T2"></typeparam>
+	/// <typeparam name="TR"></typeparam>
+	/// <returns>Curried input func</returns>
 	public static Func<T1, Func<T2, TR>> Curry<T1, T2, TR>(this Func<T1, T2, TR> func)
 		=> t1 => t2 => func(t1, t2);
 	
-	// TODO - Documentation
+	/// <summary>
+	/// Curries to Func T1 -> (T2 -> (T3->TR))
+	/// </summary>
+	/// <param name="func"></param>
+	/// <typeparam name="T1"></typeparam>
+	/// <typeparam name="T2"></typeparam>
+	/// <typeparam name="T3"></typeparam>
+	/// <typeparam name="TR"></typeparam>
+	/// <returns></returns>
 	public static Func<T1, Func<T2, Func<T3, TR>>> Curry<T1, T2, T3, TR>(this Func<T1, T2, T3, TR> func)
 		=> t1 => t2 => t3 => func(t1, t2, t3);
 	

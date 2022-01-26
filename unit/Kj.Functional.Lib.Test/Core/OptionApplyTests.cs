@@ -40,11 +40,13 @@ public class OptionApplyTests
 	{
 		Func<string, string> ConcatFunc(string s1) => s2 => $"{s1}{s2}";
 
-		Option<string> o1 = "a";
+		Option<string> optA = "a";
+		Option<string> optB = "b";
 
-		o1.Map((Func<string, Func<string, string>>)ConcatFunc)
-			.Apply((Option<string>)"b")
+		optA.Map(ConcatFunc)
+			.Apply(optB)
 			.Match(x => x, () => String.Empty)
 			.Should().Be("ab");
 	}
+
 }
