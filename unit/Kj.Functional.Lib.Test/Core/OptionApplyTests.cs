@@ -1,8 +1,11 @@
 using System;
 using AutoFixture;
 using FluentAssertions;
+using FsCheck;
 using Kj.Functional.Lib.Core;
 using NUnit.Framework;
+using FsCheck.NUnit;
+using Option;
 
 namespace Kj.Functional.Lib.Test.Core;
 
@@ -17,22 +20,20 @@ public class OptionApplyTests
 		_fixture = new Fixture();
 	}
 	
-	
-	[Test]
-	public void Apply_Another_Option()
+	[FsCheck.NUnit.Property()]
+	public void Apply_Another_Option(int a, int b)
 	{
-		Option<int> some3 = 3;
-		Option<int> some10 = 10;
+		Option<int> someA = a;
+		Option<int> someB = b;
 		
-		Func<int, int> CreateMultiplyFunc(int a)
+		Func<int, int> CreateMultiplyFunc(int x)
 		{
-			return b => a * b;
+			return y => x * b;
 		}
 
-		some3.Map(CreateMultiplyFunc)
-			.Apply(some10)
-			.Do(x => x.Should().Be(30), Assert.Fail);
-
+		someA.Map(CreateMultiplyFunc)
+			.Apply(someB)
+			.Do(x => x.Should().Be(a*b), Assert.Fail);
 	}
 
 	[Test]
@@ -47,6 +48,13 @@ public class OptionApplyTests
 			.Apply(optB)
 			.Match(x => x, () => String.Empty)
 			.Should().Be("ab");
+	}
+	
+	[FsCheck.NUnit.Property(Arbitrary = new[] { typeof(ArbitraryOption) })]
+	public void RightIdentityHolds(Option<object> m)
+	{
+		Func<object, Option<object>> bindFunc = i => Of.Some(i);
+		Assert.AreEqual(m, m.Bind(bindFunc));
 	}
 
 }
