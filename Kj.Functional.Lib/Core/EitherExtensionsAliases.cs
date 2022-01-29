@@ -32,7 +32,6 @@ public static class EitherExtensionsAliases
 		return either.MapLeftAsync(mapLeft);
 	}
 	
-		
 	/// <summary>
 	/// Maps the result part to TMapped
 	/// </summary>
@@ -45,6 +44,20 @@ public static class EitherExtensionsAliases
 	public static Either<TResult, TMapped> MapError<TResult, TError, TMapped>(this Either<TResult, TError> either, Func<TError, TMapped> mapRight)
 	{
 		return either.MapRight(mapRight);
+	}
+	
+	/// <summary>
+	/// Maps the error part to TMapped returning task.
+	/// </summary>
+	/// <param name="either">Structure to map</param>
+	/// <param name="mapRight">Error Map function</param>
+	/// <typeparam name="TResult">result type</typeparam>
+	/// <typeparam name="TError">error type</typeparam>
+	/// <typeparam name="TMapped">target type</typeparam>
+	/// <returns>task returning Either(TResult, TMapped)/></returns>
+	public static Task<Either<TResult, TMapped>> MapErrorAsync<TResult, TError, TMapped>(this Either<TResult, TError> either, Func<TError, Task<TMapped>> mapRight)
+	{
+		return either.MapRightAsync(mapRight);
 	}
 	
 	/// <summary>
