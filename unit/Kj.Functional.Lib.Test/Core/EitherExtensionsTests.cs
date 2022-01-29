@@ -51,6 +51,25 @@ public class EitherExtensionsTests
 			.Should().Be(valMapped);
 	}
 	
+	[Test]
+	public async Task MapRightAsync()
+	{
+		int val = _fixture.Create<int>();
+		var mappedReturnTask = Task.FromResult(_fixture.Create<int>());
+		Task<int> MappingFunc(int i) => mappedReturnTask;
+
+		Either<string, int> either = val;
+
+		var result = await either.MapRightAsync(MappingFunc)
+			.MatchAsync(_ =>
+				{
+					Assert.Fail();
+					return -1;
+				},
+				i => i);
+		
+		result .Should().Be(mappedReturnTask.Result);
+	}
 	
 	[Test]
 	public async Task MapLeftAsync()

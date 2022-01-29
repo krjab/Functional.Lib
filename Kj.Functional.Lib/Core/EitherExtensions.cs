@@ -39,6 +39,8 @@ public static class EitherExtensions
 		var res = await mapTask;
 		return Either<TL,TR>.Left(res);
 	}
+	
+
 
 	/// <summary>
 	/// Awaits the task and maps the result further (<see cref="MapLeftAsync{TL,TR,TMapped}(Kj.Functional.Lib.Core.Either{TL,TR},System.Func{TL,System.Threading.Tasks.Task{TMapped}})"/>
@@ -72,7 +74,29 @@ public static class EitherExtensions
 				r => mapRight(r));
 	}
 
+	/// <summary>
+	/// Maps the right side result (if present) to task returning TMapped.
+	/// </summary>
+	/// <param name="either">Either structure to map</param>
+	/// <param name="mapRight">Map function</param>
+	/// <typeparam name="TL">left result type</typeparam>
+	/// <typeparam name="TR">right result type</typeparam>
+	/// <typeparam name="TMapped">target type</typeparam>
+	/// <returns>task returning <see cref="Either{TL,TR}"/></returns>
+	public static Task<Either<TL, TMapped>> MapRightAsync<TL, TR, TMapped>(this Either<TL, TR> either, Func<TR, Task<TMapped>> mapRight)
+	{
+		return  either
+			.Match(
+				rv => Task.FromResult(Either<TL, TMapped>.Left(rv)),
+				lv => mapRight(lv).ToEitherTask<TL,TMapped>());
+	}
 
+	private static async Task<Either<TL, TR>> ToEitherTask<TL,TR>(this Task<TR> mapTask)
+	{
+		var res = await mapTask;
+		return Either<TL,TR>.Right(res);
+	}
+	
 	/// <summary>
 	/// Uses the left side result (if present) as parameter to another Either returning function and returns
 	/// this next function's result.
