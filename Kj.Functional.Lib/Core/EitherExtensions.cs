@@ -221,6 +221,35 @@ public static class EitherExtensions
 	}
 	
 	/// <summary>
+	/// Performs a side effect causing action on left side value.
+	/// </summary>
+	/// <param name="either">Either structure to map</param>
+	/// <param name="leftResultAction">action to perform on the left side value</param>
+	/// <typeparam name="TL">Left side type</typeparam>
+	/// <typeparam name="TR">Right side type</typeparam>
+	/// <returns>Original structure</returns>
+	public static Either<TL, TR> DoWithLeft<TL, TR>(this Either<TL, TR> either, Action<TL> leftResultAction)
+	{
+		return either
+			.Do(leftResultAction, _ => { });
+	}
+
+	/// <summary>
+	/// Performs a side effect causing action on right side value.
+	/// </summary>
+	/// <param name="either">Either structure to map</param>
+	/// <param name="rightResultAction">action to perform on the righ side value</param>
+	/// <typeparam name="TL">Left side type</typeparam>
+	/// <typeparam name="TR">Right side type</typeparam>
+	/// <returns>Original structure</returns>
+	public static Either<TL, TR> DoWithRight<TL, TR>(this Either<TL, TR> either, Action<TR> rightResultAction)
+	{
+		return either
+			.Do(_ => { },
+				rightResultAction);
+	}
+	
+	/// <summary>
 	/// Performs a side effect causing action on left or right side value.
 	/// </summary>
 	/// <param name="thisEither">Either structure to map</param>

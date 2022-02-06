@@ -183,6 +183,20 @@ public class EitherExtensionsTests
 	}
 	
 	[Test]
+	public void DoLeft_With_LeftResult()
+	{
+		int someValue = _fixture.Create<int>();
+		Either<int, string> either = someValue;
+
+		bool isModified = false;
+		
+
+		either
+			.DoWithLeft(_=>isModified=true);
+		isModified.Should().BeTrue();
+	}
+	
+	[Test]
 	public void Do_With_RightResult()
 	{
 		string someValue = _fixture.Create<string>();
@@ -191,6 +205,18 @@ public class EitherExtensionsTests
 		either
 			.Do(i => Assert.Fail(),
 				s => s.Should().Be(someValue));
+	}
+	
+	[Test]
+	public void DoRight_With_RightResult()
+	{
+		var someValue = _fixture.Create<string>();
+		Either<int, string> either = someValue;
+
+		bool isModified = false;
+		either
+			.DoWithRight(_=>isModified=true);
+		isModified.Should().BeTrue();
 	}
 	
 	[Test]
