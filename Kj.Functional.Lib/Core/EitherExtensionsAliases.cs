@@ -110,4 +110,32 @@ public static class EitherExtensionsAliases
 		return await takResult
 			.BindResultAsync(mapResult);
 	}
+	
+	/// <summary>
+	/// Performs a side-effect action for result (if present)
+	/// </summary>
+	/// <param name="either">input Either</param>
+	/// <param name="resultAction">action to perform</param>
+	/// <typeparam name="TL"></typeparam>
+	/// <typeparam name="TR"></typeparam>
+	/// <returns>Original structure</returns>
+	public static Either<TL, TR> DoWithResult<TL, TR>(this Either<TL, TR> either, Action<TL> resultAction)
+	{
+		return either
+			.DoWithLeft(resultAction);
+	}
+	
+	/// <summary>
+	/// Performs a side-effect action for error (if present)
+	/// </summary>
+	/// <param name="either">input Either</param>
+	/// <param name="errorAction">action to perform</param>
+	/// <typeparam name="TL"></typeparam>
+	/// <typeparam name="TR"></typeparam>
+	/// <returns>Original structure</returns>
+	public static Either<TL, TR> DoWithError<TL, TR>(this Either<TL, TR> either, Action<TR> errorAction)
+	{
+		return either
+			.DoWithRight(errorAction);
+	}
 }
