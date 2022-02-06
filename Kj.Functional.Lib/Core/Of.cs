@@ -1,6 +1,6 @@
 namespace Kj.Functional.Lib.Core;
 
-public static partial class Of
+public static class Of
 {
 	public static Option.None None
 		=> Option.None.Default;
