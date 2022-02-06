@@ -38,6 +38,24 @@ public class OptionExtensionsTests
 	}
 	
 	[Test]
+	public void Do_Some_WithValue()
+	{
+		int testedVal = _fixture.CreateInt(0, 100);
+		Option<int> option = testedVal;
+
+		option.DoWithValue(r => r.Should().Be(testedVal));
+	}
+	
+	[Test]
+	public void Do_Some_WithValue_WhenNone()
+	{
+		Option<int> option = Of.None;
+
+		option.DoWithValue(r => Assert.Fail());
+		Assert.Pass();
+	}
+	
+	[Test]
 	public void Map_Some()
 	{
 		int testedVal = _fixture.CreateInt(0, 100);

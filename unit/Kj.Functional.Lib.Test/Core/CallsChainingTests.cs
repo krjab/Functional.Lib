@@ -51,7 +51,6 @@ public class CallsChainingTests
 		return finalResult.Match(i => (object)i, s => s);
 	}
 
-
 	private static Either<int, string> CreateEither(object input)
 	{
 		if (input is int v)

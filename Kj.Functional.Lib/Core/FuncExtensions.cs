@@ -38,13 +38,30 @@ public static class FuncExtensions
 		return toReturn;
 	}
 	
-	// TODO - Documentation
-	public static Func<T2, TR> Apply<T1, T2, TR>(this Func<T1, T2, TR> f, T1 t1)
-		=> t2 => f(t1, t2);
+	/// <summary>
+	/// "Reduces" the argument func of 3 parameters to the func of 2 parameters, applying first parameter. 
+	/// </summary>
+	/// <param name="thisFunc">Function to apply for</param>
+	/// <param name="t1">Parameter to apply</param>
+	/// <typeparam name="T1"></typeparam>
+	/// <typeparam name="T2"></typeparam>
+	/// <typeparam name="TR"></typeparam>
+	/// <returns>Function T2->TR</returns>
+	public static Func<T2, TR> Apply<T1, T2, TR>(this Func<T1, T2, TR> thisFunc, T1 t1)
+		=> t2 => thisFunc(t1, t2);
 
-	// TODO - Documentation
-	public static Func<T2, T3, TR> Apply<T1, T2, T3, TR>(this Func<T1, T2, T3, TR> f, T1 t1)
-		=> (t2, t3) => f(t1, t2, t3);
+	/// <summary>
+	/// "Reduces" the argument func of 4 parameters to the func of 3 parameters, applying first parameter. 
+	/// </summary>
+	/// <param name="thisFunc">Function to apply for</param>
+	/// <param name="t1">Parameter to apply</param>
+	/// <typeparam name="T1"></typeparam>
+	/// <typeparam name="T2"></typeparam>
+	/// <typeparam name="TR"></typeparam>
+	/// <typeparam name="T3"></typeparam>
+	/// <returns>Function (T2,T3)->TR</returns>
+	public static Func<T2, T3, TR> Apply<T1, T2, T3, TR>(this Func<T1, T2, T3, TR> thisFunc, T1 t1)
+		=> (t2, t3) => thisFunc(t1, t2, t3);
 	
 	
 	/// <summary>

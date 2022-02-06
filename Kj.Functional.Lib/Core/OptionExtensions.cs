@@ -1,6 +1,3 @@
-
-using Option;
-
 namespace Kj.Functional.Lib.Core;
 
 public static class OptionExtensions
@@ -20,7 +17,7 @@ public static class OptionExtensions
 		);
 
 	/// <summary>
-	/// Performs a side effect causing action, either on underlying value or another action for none.
+	/// Performs a side effect causing action, either on underlying value of <paramref name="option"/> or another action for none.
 	/// </summary>
 	/// <param name="option">Option to use</param>
 	/// <param name="some">Action to apply if underlying value present.</param>
@@ -40,6 +37,20 @@ public static class OptionExtensions
 				return option;
 			});
 	}
+	
+	/// <summary>
+	/// Performs a side effect causing action if underlying value of <paramref name="option"/> is present.
+	/// </summary>
+	/// <param name="option">Option to use</param>
+	/// <param name="some">Action to apply if underlying value present.</param>
+	/// <typeparam name="T">Underlying value type.</typeparam>
+	/// <returns>This Option instance</returns>
+	public static Option<T> DoWithValue<T>(this Option<T> option, Action<T> some)
+	{
+		return option
+			.Do(some, () => { });
+	}
+	
 
 	/// <summary>
 	/// Performs a side effect causing action on underlying value (if present).
@@ -143,12 +154,27 @@ public static class OptionExtensions
 		return option
 			.Match(v => predicate(v) ? option : Of.None, () => Of.None);
 	}
+
+	/// <summary>
+	/// Uses a (possible) value from <paramref name="thisOption"/> to apply it as first parameter of <paramref name="func"/>
+	/// </summary>
+	/// <param name="thisOption">input option</param>
+	/// <param name="func">func used to apply</param>
+	/// <typeparam name="T1"></typeparam>
+	/// <typeparam name="T2"></typeparam>
+	/// <typeparam name="TR"></typeparam>
+	/// <returns>Option containing a func <typeparamref name="T2"/> -> <typeparamref name="TR"/> </returns>
+	public static Option<Func<T2, TR>> Map<T1, T2, TR>(this Option<T1> thisOption, Func<T1, T2, TR> func)
+		=> thisOption.Map(func.Curry());
 	
-	// TODO - Documentation
-	public static Option<Func<T2, TR>> Map<T1, T2, TR>(this Option<T1> opt, Func<T1, T2, TR> func)
-		=> opt.Map(func.Curry());
-	
-	// TODO - Documentation
+	/// <summary>
+	/// Applies a (possible) value from  <paramref name="anotherOption"></paramref> to the possible function provided by <paramref name="thisOption"></paramref>.
+	/// </summary>
+	/// <param name="thisOption">Option containing a function</param>
+	/// <param name="anotherOption">Optional value to apply</param>
+	/// <typeparam name="T"></typeparam>
+	/// <typeparam name="TR"></typeparam>
+	/// <returns>Optional of type <typeparamref name="TR"></typeparamref> (<typeparamref name="anotherOption"></typeparamref> -> <typeparamref name="TR"></typeparamref> </returns>
 	public static Option<TR> Apply<T, TR>(this Option<Func<T, TR>> thisOption, Option<T> anotherOption)
 	{
 		return thisOption.Match(
@@ -158,7 +184,15 @@ public static class OptionExtensions
 			() => Of.None);
 	}
 	
-	// TODO - Documentation
+	/// <summary>
+	/// Uses a (possible) value from <paramref name="anotherOption"/> to apply as first argument to the possible func ot <paramref name="thisOption"/>
+	/// </summary>
+	/// <param name="thisOption">input option</param>
+	/// <param name="anotherOption">option to apply</param>
+	/// <typeparam name="T1"></typeparam>
+	/// <typeparam name="T2"></typeparam>
+	/// <typeparam name="TR"></typeparam>
+	/// <returns>Option containing func <typeparamref name="T2"/> -> <typeparamref name="TR"/> </returns>
 	public static Option<Func<T2, TR>> Apply<T1, T2, TR>(this Option<Func<T1, T2, TR>> thisOption, Option<T1> anotherOption)
 		=> Apply(thisOption.Map(f=>f.Curry()), anotherOption);
 }

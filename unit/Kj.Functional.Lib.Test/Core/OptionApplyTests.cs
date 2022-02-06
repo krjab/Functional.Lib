@@ -50,6 +50,22 @@ public class OptionApplyTests
 			.Should().Be("ab");
 	}
 	
+	[Test]
+	public void Option_Applied_To_Option_Func()
+	{
+		Func<string, string, string> concatFunc = (s1, s2) => $"{s1}{s2}";
+		Option<Func<string, string, string>> inputOptionFunc = concatFunc;
+
+		string providedOptional1 = _fixture.Create<string>();
+		string providedOptional2 = _fixture.Create<string>();
+		Option<string> anotherOptional = providedOptional1;
+
+		inputOptionFunc.Apply(anotherOptional)
+			.Match(f => f(providedOptional2),
+				() => "not expected")
+			.Should().Be(concatFunc(providedOptional1, providedOptional2));
+	}
+	
 	[FsCheck.NUnit.Property(Arbitrary = new[] { typeof(ArbitraryOption) })]
 	public void RightIdentityHolds(Option<object> m)
 	{
