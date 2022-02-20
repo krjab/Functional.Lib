@@ -6,6 +6,7 @@ using FluentAssertions;
 using Kj.Functional.Lib.Core;
 using Kj.Functional.Lib.Test.TestHelpers.Fixture;
 using NUnit.Framework;
+using Option;
 
 namespace Kj.Functional.Lib.Test.Core;
 
@@ -140,13 +141,27 @@ public class OptionExtensionsTests
 	}
 
 	[Test]
-	public void Where()
+	public void Filter()
 	{
 		const int testedVal = 100;
 		Option<int> op1 = testedVal;
 
 		op1.Filter(x => x == testedVal).Match(x => true, () => false).Should().BeTrue();
 		op1.Filter(x => x < testedVal).Match(x => true, () => false).Should().BeFalse();
+	}
+
+	[Test]
+	public void Or()
+	{
+		Option<int> op1 = Of.None;
+		int alternativeVal = _fixture.Create<int>();
+		op1.Or(() => alternativeVal)
+			.Match(i => i.Should().Be(alternativeVal),
+				() =>
+				{
+					Assert.Fail();
+					throw new Exception("invalid value");
+				});
 	}
 
 	[Test]
