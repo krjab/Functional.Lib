@@ -174,7 +174,7 @@ public static class OptionExtensions
 	/// <param name="anotherOption">Optional value to apply</param>
 	/// <typeparam name="T"></typeparam>
 	/// <typeparam name="TR"></typeparam>
-	/// <returns>Optional of type <typeparamref name="TR"></typeparamref> (<typeparamref name="anotherOption"></typeparamref> -> <typeparamref name="TR"></typeparamref> </returns>
+	/// <returns>Optional of type <typeparamref name="TR"></typeparamref> (<paramref name="anotherOption"></paramref> -> <typeparamref name="TR"></typeparamref> </returns>
 	public static Option<TR> Apply<T, TR>(this Option<Func<T, TR>> thisOption, Option<T> anotherOption)
 	{
 		return thisOption.Match(
