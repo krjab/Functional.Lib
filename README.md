@@ -92,3 +92,7 @@ the Either with the _'left hand'_ part (meaning valid result). Otherwise
 the further methods do not get called and processing stops
 with the _'right hand'_ value (meaning error result).
 
+# Further development
+I'll be happy to hear about suggestions or ideas regarding further features.
+
+
