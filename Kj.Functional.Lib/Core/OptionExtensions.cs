@@ -154,6 +154,18 @@ public static class OptionExtensions
 		return option
 			.Match(v => predicate(v) ? option : Of.None, () => Of.None);
 	}
+	
+	/// <summary>
+	/// Binds to another Optional value if this one is None.
+	/// </summary>
+	/// <param name="option">Input Option</param>
+	/// <param name="createFunc">create function of alternative value</param>
+	/// <typeparam name="T">Underlying type</typeparam>
+	/// <returns>this option or created alternative value</returns>
+	public static Option<T> Or<T>(this Option<T> option, Func<T> createFunc)
+	{
+		return option.HasValue ? option : createFunc();
+	}
 
 	/// <summary>
 	/// Uses a (possible) value from <paramref name="thisOption"/> to apply it as first parameter of <paramref name="func"/>
@@ -174,7 +186,7 @@ public static class OptionExtensions
 	/// <param name="anotherOption">Optional value to apply</param>
 	/// <typeparam name="T"></typeparam>
 	/// <typeparam name="TR"></typeparam>
-	/// <returns>Optional of type <typeparamref name="TR"></typeparamref> (<typeparamref name="anotherOption"></typeparamref> -> <typeparamref name="TR"></typeparamref> </returns>
+	/// <returns>Optional of type <typeparamref name="TR"></typeparamref> (<paramref name="anotherOption"></paramref> -> <typeparamref name="TR"></typeparamref> </returns>
 	public static Option<TR> Apply<T, TR>(this Option<Func<T, TR>> thisOption, Option<T> anotherOption)
 	{
 		return thisOption.Match(

@@ -25,10 +25,8 @@ public class EitherUsageExamples
 		var parseResult = ParseString(stringToParse);
 		var finalResult = parseResult
 			// we can (although we don't have to) utilize the value contained in Either for example to log
-			.Do(
-				lv=>Console.WriteLine($"Correct value of {lv}"),
-				rv=>Console.WriteLine($"error: {rv}")
-				)	
+			.DoWithResult(lv=>Console.WriteLine($"Correct value of {lv}"))
+			.DoWithError(rv=>Console.WriteLine($"error: {rv}"))
 			//
 			.Match(
 				i => $"Length of {i}",
