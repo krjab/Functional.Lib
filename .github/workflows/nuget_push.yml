@@ -2,7 +2,8 @@ name: NuGet Generation
 
 on:
   push:
-    branches: [ master ]
+    tags:
+      - '*'
 
 jobs:
   build:
