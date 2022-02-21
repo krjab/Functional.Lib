@@ -5,8 +5,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PackageId>Kj.Functional.Lib</PackageId>
-        <Version>0.2.5</Version>
-        <PackageVersion>0.2.5</PackageVersion>
+        <Version>0.2.6</Version>
+        <PackageVersion>0.2.6</PackageVersion>
         <Authors>K. Jablonski</Authors>
         <Company>---</Company>
         <Title>Kj Functional Library</Title>
