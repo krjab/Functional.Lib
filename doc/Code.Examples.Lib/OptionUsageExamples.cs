@@ -1,5 +1,4 @@
 ﻿using Kj.Functional.Lib.Core;
-using Kj.Functional.Lib.Extensions.Parse;
 
 namespace Code.Examples.Lib;
 
@@ -25,6 +24,7 @@ public class OptionUsageExamples
 		// The result object contains valid values.
 	}
 
+	
 	public static void ConsumeOptionExample2()
 	{
 		string inputString = "123";
