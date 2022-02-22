@@ -6,7 +6,6 @@ using FluentAssertions;
 using Kj.Functional.Lib.Core;
 using Kj.Functional.Lib.Test.TestHelpers.Fixture;
 using NUnit.Framework;
-using Option;
 
 namespace Kj.Functional.Lib.Test.Core;
 
