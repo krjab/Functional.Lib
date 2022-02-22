@@ -168,6 +168,24 @@ public static class OptionExtensions
 	}
 
 	/// <summary>
+	/// Converts this option to an Either structure. Contained value becomes the left side value of the Either,
+	/// if it's a None then a "right side" Either value is create using <paramref name="noneFunc"/>.
+	/// </summary>
+	/// <param name="thisOption">this option</param>
+	/// <param name="noneFunc">create factory for None</param>
+	/// <typeparam name="TOption"></typeparam>
+	/// <typeparam name="TNone"></typeparam>
+	/// <returns>Either structure</returns>
+	public static Either<TOption, TNone> ToEither<TOption, TNone>(this Option<TOption> thisOption,
+		Func<TNone> noneFunc)
+	{
+		return thisOption
+			.Match(Either<TOption, TNone>.Left,
+				()=>Either<TOption, TNone>.Right(noneFunc())
+				);
+	}
+
+	/// <summary>
 	/// Uses a (possible) value from <paramref name="thisOption"/> to apply it as first parameter of <paramref name="func"/>
 	/// </summary>
 	/// <param name="thisOption">input option</param>
