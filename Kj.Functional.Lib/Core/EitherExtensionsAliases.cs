@@ -138,4 +138,18 @@ public static class EitherExtensionsAliases
 		return either
 			.DoWithRight(errorAction);
 	}
+
+	/// <summary>
+	/// Converts the either into an option, taking the left side (success) value as Some
+	/// or discarding the right (error) side as None.
+	/// </summary>
+	/// <param name="thisEither">this Either</param>
+	/// <typeparam name="TResult"></typeparam>
+	/// <typeparam name="TError"></typeparam>
+	/// <returns>Option of <typeparamref name="TResult"/> </returns>
+	public static Option<TResult> AsOption<TResult, TError>(this Either<TResult, TError> thisEither)
+	{
+		return thisEither
+			.Match<Option<TResult>>(v => v, _ => Of.None);
+	}
 }
