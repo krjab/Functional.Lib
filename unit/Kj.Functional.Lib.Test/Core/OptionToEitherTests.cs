@@ -43,4 +43,22 @@ public class OptionToEitherTests
 			.Do(x => Assert.Fail("Should not be called"),
 				s => s.Should().Be(errorValue));
 	}
+
+	[Test]
+	public void Either_Result_To_OptionSome()
+	{
+		var someValue = _fixture.Create<int>();
+		Either<int, string> either = someValue;
+		either.AsOption()
+			.Do(v => v.Should().Be(someValue), Assert.Fail);
+	}
+	
+	[Test]
+	public void Either_Error_To_OptionNone()
+	{
+		var errorValue = _fixture.Create<string>();
+		Either<int, string> either = errorValue;
+		either.AsOption()
+			.Do(v => Assert.Fail(), Assert.Pass);
+	}
 }
