@@ -25,5 +25,8 @@ jobs:
       - name: Build solution and generate NuGet package
         run: dotnet pack -c Release -o out  Kj.Functional.Lib/
 
-      - name: Push generated package to GitHub registry
+      - name: Push generated package to Nuget 
         run: dotnet nuget push out/*.nupkg --skip-duplicate --api-key ${{secrets.NUGET_TOKEN}} --source https://api.nuget.org/v3/index.json
+        
+      - name: Push generated package to GitHub registry
+        run: dotnet nuget push out/*.nupkg --skip-duplicate --api-key ${{secrets.PACKAGE_TOKEN}} --source https://nuget.pkg.github.com/krjab/index.json   
