@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 namespace Kj.Functional.Lib.Core;
 
 public static class EitherExtensionsAliases
@@ -151,5 +153,22 @@ public static class EitherExtensionsAliases
 	{
 		return thisEither
 			.Match<Option<TResult>>(v => v, _ => Of.None);
+	}
+	
+	/// <summary>
+	/// Groups results and errors from the provided list.
+	/// </summary>
+	/// <param name="eithers">List to process</param>
+	/// <typeparam name="TResult">result type</typeparam>
+	/// <typeparam name="TError">error type</typeparam>
+	/// <returns>Tuple containing arrays of results and errors</returns>
+	public static (ImmutableArray<TResult> Results, ImmutableArray<TError> Errors) GroupResultsAndErrors<TResult, TError>(this IEnumerable<Either<TResult, TError>> eithers)
+	{
+		var results = ImmutableArray<TResult>.Empty;
+		var errors = ImmutableArray<TError>.Empty;
+
+		return eithers.Aggregate((results, errors), (resultsAndErrors, either) => either.Match(
+			r => (resultsAndErrors.results.Add(r), resultsAndErrors.errors),
+			err => (resultsAndErrors.results, resultsAndErrors.errors.Add(err))));
 	}
 }
