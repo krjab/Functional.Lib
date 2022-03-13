@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
@@ -274,5 +275,41 @@ public class EitherExtensionsTests
 		await either
 			.DoAsync(i => leftTaskFunc(i),
 				s => rightTaskFunc(s));
+	}
+
+	private static readonly IEnumerable<Either<int, string>> _testInputForGroupResultsAndErrors = new[]
+	{
+		Either<int, string>.Left(101),
+		Either<int, string>.Right("error")
+	};
+	
+	[TestCaseSource(nameof(_testInputForGroupResultsAndErrors))]
+	public void GroupResultsAndErrors_For1Element(Either<int, string> inputEither)
+	{
+		var listOfEithers = new[] { inputEither };
+
+		var (results, errors) = listOfEithers.GroupResultsAndErrors();
+
+		inputEither.Do(
+			_ =>
+			{
+				results.Should().NotBeEmpty();
+				errors.Should().BeEmpty();
+			},
+			_ =>
+			{
+				results.Should().BeEmpty();
+				errors.Should().NotBeEmpty();
+			}
+		);
+	}
+	
+	[Test]
+	public void GroupResultsAndErrors_OnEmptyList()
+	{
+		var emptyList = Array.Empty<Either<int, string>>();
+		var (results, errors) = emptyList.GroupResultsAndErrors();
+		results.Should().BeEmpty();
+		errors.Should().BeEmpty();
 	}
 }
