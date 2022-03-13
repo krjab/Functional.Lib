@@ -28,12 +28,12 @@ public static class OptionExtensions
 	{
 		return option.Match(r =>
 			{
-				some.ToFunc()(r);
+				some(r);
 				return option;
 			},
 			() =>
 			{
-				none.ToFunc()();
+				none();
 				return option;
 			});
 	}

@@ -1,7 +1,7 @@
 using FsCheck;
 using Kj.Functional.Lib.Core;
 
-namespace Kj.Functional.Lib.Test.Core;
+namespace Kj.Functional.Lib.Test.TestHelpers;
 
 internal static class ArbitraryEither
 {
