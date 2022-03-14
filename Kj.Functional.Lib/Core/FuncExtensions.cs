@@ -91,7 +91,7 @@ public static class FuncExtensions
 
 
 	/// <summary>
-	/// Composes <paramref name="func1"/> with <paramref name="another"/> to create 1 function from <typeparamref name="T1"/> to <typeparamref name="T2"/>
+	/// Composes <paramref name="func1"/> with <paramref name="another"/> to create 1 function from <typeparamref name="T1"/> to <typeparamref name="T3"/>
 	/// </summary>
 	/// <param name="func1">Input function</param>
 	/// <param name="another">Function to compose with</param>
@@ -102,6 +102,54 @@ public static class FuncExtensions
 	public static Func<T1, T3> ComposeWith<T1, T2, T3>(this Func<T1, T2> func1, Func<T2, T3> another)
 	{
 		return x => another(func1(x));
+	}
+
+	/// <summary>
+	/// Composes task returning <paramref name="func1"/> with <paramref name="another"/> to create 1 function from <typeparamref name="T1"/> to task returning <typeparamref name="T3"/>
+	/// </summary>
+	/// <param name="func1">Input function</param>
+	/// <param name="another">Function to compose with</param>
+	/// <typeparam name="T1"></typeparam>
+	/// <typeparam name="T2"></typeparam>
+	/// <typeparam name="T3"></typeparam>
+	/// <returns>Composed function</returns>
+	public static Func<T1, Task<T3>> ComposeWith<T1, T2, T3>(this Func<T1, Task<T2>> func1, Func<T2, T3> another)
+	{
+		return t1 =>
+		{
+			var val1 = func1(t1);
+			var t3 = Task.Run(async () =>
+			{
+				var v2 = await val1;
+				return another(v2);
+			});
+
+			return t3;
+		};
+	}
+	
+	/// <summary>
+	/// Composes task returning <paramref name="func1"/> with task returning <paramref name="another"/> to create 1 function from <typeparamref name="T1"/> to task returning <typeparamref name="T3"/>
+	/// </summary>
+	/// <param name="func1">Input function</param>
+	/// <param name="another">Function to compose with</param>
+	/// <typeparam name="T1"></typeparam>
+	/// <typeparam name="T2"></typeparam>
+	/// <typeparam name="T3"></typeparam>
+	/// <returns>Composed function</returns>
+	public static Func<T1, Task<T3>> ComposeWith<T1, T2, T3>(this Func<T1, Task<T2>> func1, Func<T2, Task<T3>> another)
+	{
+		return t1 =>
+		{
+			var val1 = func1(t1);
+			var t3 = Task.Run(async () =>
+			{
+				var v2 = await val1;
+				return await another(v2);
+			});
+
+			return t3;
+		};
 	}
 	
 	/// <summary>
