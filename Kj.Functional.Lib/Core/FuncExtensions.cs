@@ -167,5 +167,23 @@ public static class FuncExtensions
 			.Match<Option<T3>>(v => another(v), () => Of.None);
 		return fComp;
 	}
-	
+
+	/// <summary>
+	/// Calls the given function, catching an exception thrown and returning either <typeparamref name="T"/> or an exception.
+	/// </summary>
+	/// <param name="func">Func to call</param>
+	/// <typeparam name="T"></typeparam>
+	/// <returns>Either T or exception</returns>
+	public static Either<T, Exception> TryCall<T>(this Func<T> func)
+	{
+		try
+		{
+			return func();
+		}
+		catch (Exception e)
+		{
+			return e;
+		}
+	}
+
 }

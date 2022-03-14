@@ -111,4 +111,33 @@ public class FuncExtensionsTests
 				.Should().Be(invalidValue);
 		}
 	}
+
+	[Test]
+	public void TryCall_Exceptionable([Values(true, false)] bool shouldThrow)
+	{
+		const string exceptionMessage = "Generated exception";
+
+		Func<int> func = () =>
+		{
+			if (shouldThrow)
+			{
+				throw new Exception(exceptionMessage);
+			}
+
+			return _fixture.Create<int>();
+		};
+
+		var exceptionableResult = func.TryCall();
+		if (shouldThrow)
+		{
+			exceptionableResult.Do(_ => Assert.Fail("Should have an exception"),
+				_ => Assert.Pass());
+		}
+		else
+		{
+			exceptionableResult.Do(_ => Assert.Pass(),
+				e => Assert.Fail(e.Message));
+		}
+		
+	}
 }
