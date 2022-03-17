@@ -112,6 +112,38 @@ public class FuncExtensionsTests
 		}
 	}
 
+	private readonly struct ErrorInfo
+	{
+		public ErrorInfo(string text)
+		{
+			Text = text;
+		}
+
+		public string Text { get; }
+	}
+	
+	[FsCheck.NUnit.Property()]
+	public void Compose_With_Either(string? input)
+	{
+		Func<string?, Either<int, ErrorInfo>> func1 = s => s != null ? s.Length : new ErrorInfo("invalid input");
+		Func<int, string> func2 = i => $"input length: {i}";
+
+		var composed = func1.ComposeWith(func2);
+
+		if (input != null)
+		{
+			composed(input)
+				.Match(lv=>lv, _=>String.Empty)
+				.Should().NotBeEmpty();
+		}
+		else
+		{
+			composed(input)
+				.Match(lv=>lv, _=>String.Empty)
+				.Should().BeEmpty();
+		}
+	}
+
 	[Test]
 	public void TryCall_Exceptionable([Values(true, false)] bool shouldThrow)
 	{

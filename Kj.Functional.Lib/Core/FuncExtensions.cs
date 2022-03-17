@@ -39,9 +39,20 @@ public static class FuncExtensions
 		await rightResultTaskFunc();
 		return toReturn;
 	}
+
+	/// <summary>
+	/// "Reduces" the argument func of 1 parameter to the func of 0 parameters, applying first parameter. 
+	/// </summary>
+	/// <param name="thisFunc">Function to apply for</param>
+	/// <param name="t1">Parameter to apply</param>
+	/// <typeparam name="T1"></typeparam>
+	/// <typeparam name="TR"></typeparam>
+	/// <returns>Function T1->TR</returns>
+	public static Func<TR> Apply<T1, TR>(this Func<T1, TR> thisFunc, T1 t1)
+		=> () => thisFunc(t1);
 	
 	/// <summary>
-	/// "Reduces" the argument func of 3 parameters to the func of 2 parameters, applying first parameter. 
+	/// "Reduces" the argument func of 2 parameters to the func of 1 parameter, applying first parameter. 
 	/// </summary>
 	/// <param name="thisFunc">Function to apply for</param>
 	/// <param name="t1">Parameter to apply</param>
@@ -53,7 +64,7 @@ public static class FuncExtensions
 		=> t2 => thisFunc(t1, t2);
 
 	/// <summary>
-	/// "Reduces" the argument func of 4 parameters to the func of 3 parameters, applying first parameter. 
+	/// "Reduces" the argument func of 3 parameters to the func of 2 parameters, applying first parameter. 
 	/// </summary>
 	/// <param name="thisFunc">Function to apply for</param>
 	/// <param name="t1">Parameter to apply</param>
@@ -163,8 +174,24 @@ public static class FuncExtensions
 	/// <returns>Composed function</returns>
 	public static Func<T1, Option<T3>> ComposeWith<T1, T2, T3>(this Func<T1, Option<T2>> func1, Func<T2, T3> another)
 	{
-		Func<T1, Option<T3>> fComp = x => func1(x)
-			.Match<Option<T3>>(v => another(v), () => Of.None);
+		Func<T1, Option<T3>> fComp = x => func1(x).Map(another)
+			;
+		return fComp;
+	}
+
+	/// <summary>
+	/// Composes either returning <paramref name="func1"/> with <paramref name="another"/> to create 1 function from <typeparamref name="T1"/> to either of <typeparamref name="T3"/>/<typeparamref name="TError"/> 
+	/// </summary>
+	/// <param name="func1">Input function returning option</param>
+	/// <param name="another">Function to compose with</param>
+	/// <typeparam name="T1"></typeparam>
+	/// <typeparam name="T2"></typeparam>
+	/// <typeparam name="T3"></typeparam>
+	/// <typeparam name="TError"></typeparam>
+	/// <returns>Composed function</returns>
+	public static Func<T1, Either<T3, TError>> ComposeWith<T1, T2, TError, T3>(this Func<T1, Either<T2,TError>> func1, Func<T2, T3> another)
+	{
+		Func<T1, Either<T3, TError>> fComp = x => func1(x).MapLeft(another);
 		return fComp;
 	}
 
