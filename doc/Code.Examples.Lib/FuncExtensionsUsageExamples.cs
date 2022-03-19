@@ -14,10 +14,10 @@ public class FuncExtensionsUsageExamples
 		var lengthOfTextFile = combinedFuncReadAndResolveWordCount("input/file/path");
 	}
 
-	public static void ComposeFunctionsWithEither(string inputFilePath)
+	public static async Task  ComposeFunctionsWithEither(string inputFilePath)
 	{
-		Func<string, string> readFileFunc = System.IO.File.ReadAllText;
-		Func<string, Either<string, Exception>> tryReadFileFunc = filePath =>
+		Func<string, Task<string>> readFileFunc = path=> System.IO.File.ReadAllTextAsync(path);
+		Func<string, Task<Either<string, Exception>>> tryReadFileFunc = filePath =>
 			readFileFunc
 				.Apply(filePath)
 				.TryInvoke();
@@ -26,9 +26,9 @@ public class FuncExtensionsUsageExamples
 
 		var combinedCall = tryReadFileFunc.ComposeWith(resolveWordCounts);
 
-		var result = combinedCall(inputFilePath)
-			.MapError(e => $"Error reading file: {e.Message}")
-			.Match(wordCount => $"Contains {wordCount} word(s)",
+		var result = await combinedCall(inputFilePath)
+			.MapRightAsync(e => $"Error reading file: {e.Message}")
+			.MatchAsync(wordCount => $"Contains {wordCount} word(s)",
 				errorText => errorText);
 
 	}

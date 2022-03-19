@@ -91,6 +91,38 @@ public static class EitherExtensions
 				lv => mapRight(lv).ToEitherTask<TL,TMapped>());
 	}
 
+	/// <summary>
+	/// Maps the right side result (if present) to TMapped.
+	/// </summary>
+	/// <param name="eitherTask">Task returning Either structure to map</param>
+	/// <param name="mapRight">Map function</param>
+	/// <typeparam name="TL">left result type</typeparam>
+	/// <typeparam name="TR">right result type</typeparam>
+	/// <typeparam name="TMapped">target type</typeparam>
+	/// <returns>task returning <see cref="Either{TL,TR}"/></returns>
+	public static async Task<Either<TL, TMapped>> MapRightAsync<TL, TR, TMapped>(this Task<Either<TL, TR>> eitherTask,
+		Func<TR, TMapped> mapRight)
+	{
+		return (await eitherTask)
+			.Match<Either<TL, TMapped>>(lv => lv, tr => mapRight(tr));
+	}
+
+	/// <summary>
+	/// Maps the right side result (if present) to task returning TMapped.
+	/// </summary>
+	/// <param name="eitherTask">Either structure to map</param>
+	/// <param name="mapRight">Map function</param>
+	/// <typeparam name="TL">left result type</typeparam>
+	/// <typeparam name="TR">right result type</typeparam>
+	/// <typeparam name="TMapped">target type</typeparam>
+	/// <returns>task returning <see cref="Either{TL,TR}"/></returns>
+	public static async Task<Either<TL, TMapped>> MapRightAsync<TL, TR, TMapped>(this Task<Either<TL, TR>> eitherTask,
+		Func<TR, Task<TMapped>> mapRight)
+	{
+		var res = await eitherTask;
+		return await res.MapRightAsync(mapRight);
+	}
+
 	private static async Task<Either<TL, TR>> ToEitherTask<TL,TR>(this Task<TR> mapTask)
 	{
 		var res = await mapTask;
