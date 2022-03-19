@@ -217,11 +217,11 @@ public static class FuncExtensions
 	}
 
 	/// <summary>
-	/// Calls the given function, catching an exception thrown and returning either <typeparamref name="T"/> or an exception.
+	/// Invokes the given function, catching an exception thrown and returning either <typeparamref name="T"/> or an exception.
 	/// </summary>
 	/// <param name="func">Func to call</param>
 	/// <typeparam name="T"></typeparam>
-	/// <returns>Either T or exception</returns>
+	/// <returns><typeparamref name="T"/> or exception</returns>
 	public static Either<T, Exception> TryInvoke<T>(this Func<T> func)
 	{
 		try
@@ -232,6 +232,56 @@ public static class FuncExtensions
 		{
 			return Either<T, Exception>.Right(e);
 		}
+	}
+
+	/// <summary>
+	/// Invokes the given task returning function, catching an exception thrown and returning either <typeparamref name="T"/> or an exception.
+	/// </summary>
+	/// <param name="func">Func to call</param>
+	/// <typeparam name="T"></typeparam>
+	/// <returns><typeparamref name="T"/> or exception</returns>
+	public static async Task<Either<T, Exception>> TryInvoke<T>(this Func<Task<T>> func)
+	{
+		try
+		{
+			return await func();
+		}
+		catch (Exception e)
+		{
+			return Either<T, Exception>.Right(e);
+		}
+	}
+
+	/// <summary>
+	/// Invokes the given Either returning function, catching an exception thrown and returning either <typeparamref name="TResult"/> or <typeparamref name="TError"/>.
+	/// </summary>
+	/// <param name="func">Func to call</param>
+	/// <param name="mapExceptionFunc">exception to <typeparamref name="TError"/> mapping func</param>
+	/// <typeparam name="TResult"></typeparam>
+	/// <typeparam name="TError"></typeparam>
+	/// <returns><typeparamref name="TResult"/> or <typeparamref name="TError"/></returns>
+	public static Either<TResult, TError> TryInvoke<TResult, TError>(this Func<Either<TResult, TError>> func,
+		Func<Exception, TError> mapExceptionFunc)
+	{
+		return func.TryInvoke()
+			.Match(r=>r,
+				e=>Either<TResult, TError>.Right(mapExceptionFunc(e)));
+	}
+
+	/// <summary>
+	/// Invokes the given task of Either returning function, catching an exception thrown and returning either <typeparamref name="TResult"/> or <typeparamref name="TError"/>.
+	/// </summary>
+	/// <param name="func">Func to call</param>
+	/// <param name="mapExceptionFunc">exception to <typeparamref name="TError"/> mapping func</param>
+	/// <typeparam name="TResult"></typeparam>
+	/// <typeparam name="TError"></typeparam>
+	/// <returns><typeparamref name="TResult"/> or <typeparamref name="TError"/></returns>
+	public static async Task<Either<TResult, TError>> TryInvoke<TResult, TError>(this Func<Task<Either<TResult, TError>>> func,
+		Func<Exception, TError> mapExceptionFunc)
+	{
+		return (await func.TryInvoke())
+			.Match(r=>r,
+				e=>Either<TResult, TError>.Right(mapExceptionFunc(e)));
 	}
 
 }

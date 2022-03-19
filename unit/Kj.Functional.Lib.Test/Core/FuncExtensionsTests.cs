@@ -232,4 +232,61 @@ public class FuncExtensionsTests
 		}
 		
 	}
+	
+	[Test]
+	public void TryInvoke_AndMapException([Values(true, false)] bool shouldThrow)
+	{
+		const string exceptionMessage = "Generated exception";
+
+		Func<Either<int, ErrorInfo>> func = () =>
+		{
+			if (shouldThrow)
+			{
+				throw new Exception(exceptionMessage);
+			}
+
+			return _fixture.Create<int>();
+		};
+
+		var exceptionableResult = func.TryInvoke(e => new ErrorInfo(e.Message));
+		if (shouldThrow)
+		{
+			exceptionableResult.Do(_ => Assert.Fail("Should have an exception"),
+				_ => Assert.Pass());
+		}
+		else
+		{
+			exceptionableResult.Do(_ => Assert.Pass(),
+				e => Assert.Fail(e.Text));
+		}
+	}
+	
+	[Test]
+	public async Task TryInvoke_AndMapExceptionAsync([Values(true, false)] bool shouldThrow)
+	{
+		const string exceptionMessage = "Generated exception";
+
+		Func<Task<Either<int, ErrorInfo>>> func = () =>
+		{
+			if (shouldThrow)
+			{
+				throw new Exception(exceptionMessage);
+			}
+
+			Either<int, ErrorInfo> eith = _fixture.Create<int>();
+			return Task.FromResult<Either<int, ErrorInfo>>(eith);
+		};
+
+		var exceptionableResult = func.TryInvoke(e => new ErrorInfo(e.Message));
+		if (shouldThrow)
+		{
+			(await exceptionableResult).Do(_ => Assert.Fail("Should have an exception"),
+				_ => Assert.Pass());
+		}
+		else
+		{
+			(await exceptionableResult).Do(_ => Assert.Pass(),
+				e => Assert.Fail(e.Text));
+		}
+	}
 }
