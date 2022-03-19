@@ -1,5 +1,3 @@
-using Option;
-
 namespace Kj.Functional.Lib.Core;
 
 public static class FuncExtensions
@@ -31,7 +29,6 @@ public static class FuncExtensions
 			return Unit.Default;
 		};
 	}
-	
 	
 	internal static async Task<T> DoTaskAndReturn<T>(this Func<Task> rightResultTaskFunc,
 		T toReturn)
@@ -126,16 +123,10 @@ public static class FuncExtensions
 	/// <returns>Composed function</returns>
 	public static Func<T1, Task<T3>> ComposeWith<T1, T2, T3>(this Func<T1, Task<T2>> func1, Func<T2, T3> another)
 	{
-		return t1 =>
+		return async t1 =>
 		{
-			var val1 = func1(t1);
-			var t3 = Task.Run(async () =>
-			{
-				var v2 = await val1;
-				return another(v2);
-			});
-
-			return t3;
+			var v2 = await func1(t1);
+			return another(v2);
 		};
 	}
 	
@@ -150,16 +141,10 @@ public static class FuncExtensions
 	/// <returns>Composed function</returns>
 	public static Func<T1, Task<T3>> ComposeWith<T1, T2, T3>(this Func<T1, Task<T2>> func1, Func<T2, Task<T3>> another)
 	{
-		return t1 =>
+		return async t1 =>
 		{
-			var val1 = func1(t1);
-			var t3 = Task.Run(async () =>
-			{
-				var v2 = await val1;
-				return await another(v2);
-			});
-
-			return t3;
+			var v1 = await func1(t1);
+			return await another(v1);
 		};
 	}
 	
@@ -174,13 +159,30 @@ public static class FuncExtensions
 	/// <returns>Composed function</returns>
 	public static Func<T1, Option<T3>> ComposeWith<T1, T2, T3>(this Func<T1, Option<T2>> func1, Func<T2, T3> another)
 	{
-		Func<T1, Option<T3>> fComp = x => func1(x).Map(another)
-			;
+		Func<T1, Option<T3>> fComp = x => func1(x).Map(another);
 		return fComp;
 	}
 
 	/// <summary>
-	/// Composes either returning <paramref name="func1"/> with <paramref name="another"/> to create 1 function from <typeparamref name="T1"/> to either of <typeparamref name="T3"/>/<typeparamref name="TError"/> 
+	/// Composes task of option returning <paramref name="func1"/> with <paramref name="another"/> to create 1 function from <typeparamref name="T1"/> to optional <typeparamref name="T3"/> 
+	/// </summary>
+	/// <param name="func1">Input function returning option</param>
+	/// <param name="another">Function to compose with</param>
+	/// <typeparam name="T1"></typeparam>
+	/// <typeparam name="T2"></typeparam>
+	/// <typeparam name="T3"></typeparam>
+	/// <returns>Composed function</returns>
+	public static Func<T1, Task<Option<T3>>> ComposeWith<T1, T2, T3>(this Func<T1, Task<Option<T2>>> func1, Func<T2, T3> another)
+	{
+		return async t1 =>
+		{
+			var v2 = await func1(t1);
+			return v2.Map(another);
+		};
+	}
+
+	/// <summary>
+	/// Composes Either returning <paramref name="func1"/> with <paramref name="another"/> to create 1 function from <typeparamref name="T1"/> to either of <typeparamref name="T3"/>/<typeparamref name="TError"/> 
 	/// </summary>
 	/// <param name="func1">Input function returning option</param>
 	/// <param name="another">Function to compose with</param>
@@ -194,6 +196,25 @@ public static class FuncExtensions
 		Func<T1, Either<T3, TError>> fComp = x => func1(x).MapLeft(another);
 		return fComp;
 	}
+	
+	/// <summary>
+	/// Composes task of Either returning <paramref name="func1"/> with <paramref name="another"/> to create 1 function from <typeparamref name="T1"/> to either of <typeparamref name="T3"/>/<typeparamref name="TError"/> 
+	/// </summary>
+	/// <param name="func1">Input function returning option</param>
+	/// <param name="another">Function to compose with</param>
+	/// <typeparam name="T1"></typeparam>
+	/// <typeparam name="T2"></typeparam>
+	/// <typeparam name="T3"></typeparam>
+	/// <typeparam name="TError"></typeparam>
+	/// <returns>Composed function</returns>
+	public static Func<T1, Task<Either<T3, TError>>> ComposeWith<T1, T2, TError, T3>(this Func<T1, Task<Either<T2,TError>>> func1, Func<T2, T3> another)
+	{
+		return async t1 =>
+		{
+			var v2 = await func1(t1);
+			return v2.MapResult(another);
+		};
+	}
 
 	/// <summary>
 	/// Calls the given function, catching an exception thrown and returning either <typeparamref name="T"/> or an exception.
@@ -201,7 +222,7 @@ public static class FuncExtensions
 	/// <param name="func">Func to call</param>
 	/// <typeparam name="T"></typeparam>
 	/// <returns>Either T or exception</returns>
-	public static Either<T, Exception> TryCall<T>(this Func<T> func)
+	public static Either<T, Exception> TryInvoke<T>(this Func<T> func)
 	{
 		try
 		{
@@ -209,7 +230,7 @@ public static class FuncExtensions
 		}
 		catch (Exception e)
 		{
-			return e;
+			return Either<T, Exception>.Right(e);
 		}
 	}
 

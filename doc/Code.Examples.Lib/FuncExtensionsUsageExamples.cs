@@ -20,7 +20,7 @@ public class FuncExtensionsUsageExamples
 		Func<string, Either<string, Exception>> tryReadFileFunc = filePath =>
 			readFileFunc
 				.Apply(filePath)
-				.TryCall();
+				.TryInvoke();
 		
 		Func<string, int> resolveWordCounts = input => input.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length;
 

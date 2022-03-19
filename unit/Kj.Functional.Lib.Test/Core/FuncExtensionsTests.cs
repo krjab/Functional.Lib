@@ -111,6 +111,37 @@ public class FuncExtensionsTests
 				.Should().Be(invalidValue);
 		}
 	}
+	
+	[TestCase("")]
+	[TestCase(null)]
+	[TestCase("abc")]
+	public async Task Compose_With_TaskOption(string? input)
+	{
+		Func<string?, Task<Option<int>>> func1 = s =>
+		{
+			Option<int> o = s != null ? s.Length : Of.None;
+			return Task.FromResult(o);
+		};
+		
+		Func<int, int> func2 = i => i * 2;
+
+		Func<string?, Task<Option<int>>> composed = func1.ComposeWith(func2);
+
+		const int invalidValue = -1;
+		
+		if (input != null)
+		{
+			(await composed(input))
+				.Match(v => v, () => -1).Should().BeGreaterOrEqualTo(0);
+
+		}
+		else
+		{
+			(await composed(input))
+				.Match(v => v, () => -1).Should().BeLessThan(0);
+
+		}
+	}
 
 	private readonly struct ErrorInfo
 	{
@@ -143,9 +174,38 @@ public class FuncExtensionsTests
 				.Should().BeEmpty();
 		}
 	}
+	
+	[TestCase(null)]
+	[TestCase("")]
+	[TestCase("abc")]
+	public async Task Compose_With_Task_Either(string? input)
+	{
+		Func<string?, Task<Either<int, ErrorInfo>>> func1 = s=>
+		{
+			 Either<int, ErrorInfo> eith = s != null ? s.Length : new ErrorInfo("invalid input");
+			 return Task.FromResult(eith);
+		};
+		
+		Func<int, string> func2 = i => $"input length: {i}";
+
+		var composed = func1.ComposeWith(func2);
+
+		if (input != null)
+		{
+			(await composed(input))
+				.Match(lv=>lv, _=>String.Empty)
+				.Should().NotBeEmpty();
+		}
+		else
+		{
+			(await composed(input))
+				.Match(lv=>lv, _=>String.Empty)
+				.Should().BeEmpty();
+		}
+	}
 
 	[Test]
-	public void TryCall_Exceptionable([Values(true, false)] bool shouldThrow)
+	public void TryInvoke_Exceptionable([Values(true, false)] bool shouldThrow)
 	{
 		const string exceptionMessage = "Generated exception";
 
@@ -159,7 +219,7 @@ public class FuncExtensionsTests
 			return _fixture.Create<int>();
 		};
 
-		var exceptionableResult = func.TryCall();
+		var exceptionableResult = func.TryInvoke();
 		if (shouldThrow)
 		{
 			exceptionableResult.Do(_ => Assert.Fail("Should have an exception"),
