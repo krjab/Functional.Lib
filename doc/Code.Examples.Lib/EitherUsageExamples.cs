@@ -56,7 +56,7 @@ public class EitherUsageExamples
 
 		Task<Either<UserDto, ErrorInfo>> ModifyUserAsync(UserDto user)
 		{
-			Either<UserDto, ErrorInfo> result = user with{FirstName = $"Modified {user.FirstName}"};
+			Either<UserDto, ErrorInfo> result = user with{ FirstName = $"Modified {user.FirstName}"};
 			return Task.FromResult(result);
 		}
 		

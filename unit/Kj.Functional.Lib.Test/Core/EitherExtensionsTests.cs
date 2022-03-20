@@ -53,7 +53,7 @@ public class EitherExtensionsTests
 	}
 	
 	[Test]
-	public async Task MapRightAsync()
+	public async Task MapRight_ToTaskFunc()
 	{
 		int val = _fixture.Create<int>();
 		var mappedReturnTask = Task.FromResult(_fixture.Create<int>());
@@ -70,6 +70,48 @@ public class EitherExtensionsTests
 				i => i);
 		
 		result .Should().Be(mappedReturnTask.Result);
+	}
+	
+	[Test]
+	public async Task MapRightTask_ToFunc()
+	{
+		int val = _fixture.Create<int>();
+		var mappedReturnValue = _fixture.Create<int>();
+		int MappingFunc(int i) => mappedReturnValue;
+
+		Either<string, int> either = val;
+		var eitherTask = Task.FromResult(either);
+
+		var result = await eitherTask.MapRightAsync(MappingFunc)
+			.MatchAsync(_ =>
+				{
+					Assert.Fail();
+					return Task.FromResult(-1);
+				},
+				i => i);
+		
+		result .Should().Be(mappedReturnValue);
+	}
+	
+	[Test]
+	public async Task MapRightTask_ToTaskFunc()
+	{
+		int val = _fixture.Create<int>();
+		var mappedReturnTask = Task.FromResult(_fixture.Create<int>());
+		Task<int> MappingFunc(int i) => mappedReturnTask;
+
+		Either<string, int> either = val;
+		var eitherTask = Task.FromResult(either);
+
+		var result = await eitherTask.MapRightAsync(MappingFunc)
+			.MatchAsync(_ =>
+				{
+					Assert.Fail();
+					return Task.FromResult(-1);
+				},
+				i => i);
+		
+		result.Should().Be(mappedReturnTask.Result);
 	}
 	
 	[Test]
