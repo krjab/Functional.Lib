@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Kj.Functional.Lib.Core;
 
+[SuppressMessage("Design", "CA1031:Do not catch general exception types")]
 public static class FuncExtensions
 {
 	/// <summary>
