@@ -4,12 +4,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PackageId>Kj.Functional.Lib</PackageId>
-        <Version>0.2.10</Version>
-        <PackageVersion>0.2.10</PackageVersion>
+        <Version>0.3.0</Version>
+        <PackageVersion>0.3.0</PackageVersion>
         <Authors>K. Jablonski</Authors>
         <Company>---</Company>
         <Title>Kj Functional Library</Title>
-        <Copyright>2022</Copyright>
+        <Copyright>2026</Copyright>
         <PackageDescription>Small functional library for C#</PackageDescription>
         <PackageProjectUrl>https://github.com/krjab/Functional.Lib</PackageProjectUrl>
         <RepositoryUrl>https://github.com/krjab/Functional.Lib.git</RepositoryUrl>
