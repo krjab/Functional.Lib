@@ -1,7 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Option;
 
 namespace Kj.Functional.Lib.Core;
 
+[SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types")]
+[SuppressMessage("Design", "CA1000:Do not declare static members on generic types")]
+[SuppressMessage("Usage", "CA2225:Operator overloads have named alternates")]
 public readonly struct Either<TL, TR>
 {
 	private readonly Option<TL> _leftVal;

@@ -107,7 +107,7 @@ public class FuncExtensionsTests
 		else
 		{
 			composed(input)
-				.Match(_ => _, () => invalidValue)
+				.Match(s => s, () => invalidValue)
 				.Should().Be(invalidValue);
 		}
 	}
@@ -127,12 +127,10 @@ public class FuncExtensionsTests
 
 		Func<string?, Task<Option<int>>> composed = func1.ComposeWith(func2);
 
-		const int invalidValue = -1;
-		
 		if (input != null)
 		{
 			(await composed(input))
-				.Match(v => v, () => -1).Should().BeGreaterOrEqualTo(0);
+				.Match(v => v, () => -1).Should().BeGreaterThanOrEqualTo(0);
 
 		}
 		else
@@ -274,7 +272,7 @@ public class FuncExtensionsTests
 			}
 
 			Either<int, ErrorInfo> eith = _fixture.Create<int>();
-			return Task.FromResult<Either<int, ErrorInfo>>(eith);
+			return Task.FromResult(eith);
 		};
 
 		var exceptionableResult = func.TryInvoke(e => new ErrorInfo(e.Message));

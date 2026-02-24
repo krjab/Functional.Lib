@@ -354,7 +354,7 @@ public static class EitherExtensions
 				rv =>
 				{
 					var taskFunc = () => rightResultTaskFunc(rv);
-					return taskFunc.DoTaskAndReturn(thisEither);;
+					return taskFunc.DoTaskAndReturn(thisEither);
 				}
 			);
 	}
